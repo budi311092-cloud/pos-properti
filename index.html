@@ -64,7 +64,7 @@
       align-items: center;
       gap: 10px;
       user-select: none;
-      cursor: default;
+      cursor: pointer;
     }
 
     .brand-icon {
@@ -177,7 +177,6 @@
       margin-bottom: 4px;
       color: #334155;
     }
-
     input, select, textarea {
       width: 100%;
       padding: 10px 12px;
@@ -376,8 +375,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-bottom: 12px;
-    }
-
+      }
     .pkg-btn {
       padding: 10px 8px;
       border-radius: 10px;
@@ -644,7 +642,7 @@
             <label for="loginPin">PIN Rahasia *</label>
             <input type="password" id="loginPin" inputmode="numeric" placeholder="Masukkan PIN" required />
           </div>
-          <button type="submit" class="btn btn-primary btn-block" style="padding:12px; font-size:14px;">
+          <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-block" style="padding:12px; font-size:14px;">
             Masuk ke Sistem
           </button>
         </form>
@@ -756,7 +754,6 @@
         </div>
       </div>
     </main>
-
     <main class="container hidden" id="viewOwnerDashboard">
       <div class="owner-tabs" id="ownerTabBar">
         <button type="button" class="owner-tab active" data-tab="ringkasan">1. Ringkasan</button>
@@ -993,8 +990,7 @@
                 ]
               }
             },
-            {
-              id: "U-06",
+            id: "U-06",
               name: "Ruko Pasar No. 03",
               type: "Toko / Ruko",
               address: "Jl. Raya Pasar Pagi No. 03, Cirebon",
@@ -1061,15 +1057,25 @@
       var activeOwnerTab = "ringkasan";
 
       function loadState() {
+        var fallback = getInitialState();
         var raw = safeGetItem(STORAGE_KEY);
         if (raw) {
           try {
-            state = JSON.parse(raw);
+            var parsed = JSON.parse(raw);
+            state = Object.assign({}, fallback, parsed);
+            if (!state.ownerPin) state.ownerPin = "1234";
+            if (!Array.isArray(state.staffAccounts) || state.staffAccounts.length === 0) {
+              state.staffAccounts = fallback.staffAccounts;
+            }
+            if (!Array.isArray(state.units)) state.units = fallback.units;
+            if (!Array.isArray(state.kiosProducts)) state.kiosProducts = fallback.kiosProducts;
+            if (!Array.isArray(state.transactions)) state.transactions = fallback.transactions;
+            if (!Array.isArray(state.expenses)) state.expenses = fallback.expenses;
           } catch (e) {
-            state = getInitialState();
+            state = fallback;
           }
         } else {
-          state = getInitialState();
+          state = fallback;
         }
         saveState();
       }
@@ -1132,20 +1138,28 @@
         }
       }
 
-      document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+      function handleLoginSubmit(e) {
+        if (e) e.preventDefault();
         var idInput = document.getElementById("loginId").value.trim().toLowerCase();
         var pinInput = document.getElementById("loginPin").value.trim();
         var errBox = document.getElementById("loginError");
         errBox.classList.add("hidden");
 
-        if (idInput === "owner" && pinInput === state.ownerPin) {
+        if (!idInput || !pinInput) {
+          errBox.textContent = "Harap isi ID Login dan PIN Rahasia terlebih dahulu.";
+          errBox.classList.remove("hidden");
+          return;
+        }
+
+        if (idInput === "owner" && pinInput === String(state.ownerPin)) {
+          document.getElementById("loginId").value = "";
+          document.getElementById("loginPin").value = "";
           enterOwnerMode();
           return;
         }
 
         var matched = state.staffAccounts.find(function (acc) {
-          return acc.id.toLowerCase() === idInput && acc.pin === pinInput;
+          return acc.id.toLowerCase() === idInput && String(acc.pin) === pinInput;
         });
 
         if (!matched) {
@@ -1168,7 +1182,9 @@
           renderStaffOperations();
           showView("viewStaffUnits");
         }
-      });
+      }
+
+      document.getElementById("loginForm").addEventListener("submit", handleLoginSubmit);
 
       document.getElementById("btnSwitchAccount").addEventListener("click", function () {
         currentUser = null;
@@ -1209,10 +1225,16 @@
       brandTrigger.addEventListener("touchend", function () {
         clearTimeout(holdTimer);
       });
+      brandTrigger.addEventListener("touchcancel", function () {
+        clearTimeout(holdTimer);
+      });
       brandTrigger.addEventListener("mousedown", function () {
         holdTimer = setTimeout(openSecretOwnerModal, 1500);
       });
       brandTrigger.addEventListener("mouseup", function () {
+        clearTimeout(holdTimer);
+      });
+      brandTrigger.addEventListener("mouseleave", function () {
         clearTimeout(holdTimer);
       });
 
@@ -1223,15 +1245,14 @@
       document.getElementById("ownerPinForm").addEventListener("submit", function (e) {
         e.preventDefault();
         var pin = document.getElementById("secretOwnerPinInput").value.trim();
-        if (pin === state.ownerPin) {
+        if (pin === String(state.ownerPin)) {
           document.getElementById("ownerPinBackdrop").classList.remove("open");
           enterOwnerMode();
         } else {
           document.getElementById("ownerPinErr").classList.remove("hidden");
         }
       });
-
-      function enterOwnerMode() {
+    function enterOwnerMode() {
         currentUser = { role: "owner", name: "Owner (Melisa)" };
         document.getElementById("activeRoleLabel").textContent = "Owner";
         renderOwnerDashboard();
@@ -1551,13 +1572,14 @@
           });
 
           saveState();
-          sendTelegramAlert("✅ SEWA BARU
-Unit: " + unit.name + "
-Alamat: " + unit.address + "
-Penyewa: " + tName + "
-Paket: " + selectedPkg.toUpperCase() + "
-Check-Out: " + formatDisplayDate(co) + "
-Total: " + formatRp(calculatedRent + calculatedDeposit));
+          sendTelegramAlert(
+            "✅ SEWA BARU\nUnit: " + unit.name +
+            "\nAlamat: " + unit.address +
+            "\nPenyewa: " + tName +
+            "\nPaket: " + selectedPkg.toUpperCase() +
+            "\nCheck-Out: " + formatDisplayDate(co) +
+            "\nTotal: " + formatRp(calculatedRent + calculatedDeposit)
+          );
 
           document.getElementById("unitModalBackdrop").classList.remove("open");
           renderStaffOperations();
@@ -1568,9 +1590,8 @@ Total: " + formatRp(calculatedRent + calculatedDeposit));
             printDocument("perjanjian_dan_bill", unit, unit.tenant);
           }
         });
-      }
-
-      function renderOccupiedActionModal(unit, st, container) {
+    }
+    function renderOccupiedActionModal(unit, st, container) {
         var t = unit.tenant;
         var alertBanner = st.color === "red"
           ? '<div class="alert-box alert-red">⚠️ Perhatian: Masa sewa unit ini ' + st.label + ' (' + formatDisplayDate(t.checkOut) + '). Segera lakukan perpanjangan atau proses check-out.</div>'
@@ -1710,12 +1731,13 @@ Total: " + formatRp(calculatedRent + calculatedDeposit));
           });
 
           saveState();
-          sendTelegramAlert("🔄 PERPANJANGAN SEWA
-Unit: " + unit.name + "
-Penyewa: " + unit.tenant.name + "
-Paket: " + renewPkg.toUpperCase() + "
-Jatuh Tempo Baru: " + formatDisplayDate(newEnd) + "
-Nominal: " + formatRp(renewCost));
+          sendTelegramAlert(
+            "🔄 PERPANJANGAN SEWA\nUnit: " + unit.name +
+            "\nPenyewa: " + unit.tenant.name +
+            "\nPaket: " + renewPkg.toUpperCase() +
+            "\nJatuh Tempo Baru: " + formatDisplayDate(newEnd) +
+            "\nNominal: " + formatRp(renewCost)
+          );
 
           var tenantSnapshot = JSON.parse(JSON.stringify(unit.tenant));
           document.getElementById("unitModalBackdrop").classList.remove("open");
@@ -1784,12 +1806,13 @@ Nominal: " + formatRp(renewCost));
           unit.tenant = null;
           saveState();
 
-          sendTelegramAlert("🚪 CHECK-OUT UNIT
-Unit: " + unit.name + "
-Alamat: " + unit.address + "
-Mantan Penyewa: " + checkoutSummary.tenant.name + "
-Deposito Dikembalikan: " + formatRp(refund) + "
-Potongan: " + formatRp(deduction) + " (" + note + ")");
+          sendTelegramAlert(
+            "🚪 CHECK-OUT UNIT\nUnit: " + unit.name +
+            "\nAlamat: " + unit.address +
+            "\nMantan Penyewa: " + checkoutSummary.tenant.name +
+            "\nDeposito Dikembalikan: " + formatRp(refund) +
+            "\nPotongan: " + formatRp(deduction) + " (" + note + ")"
+          );
 
           document.getElementById("unitModalBackdrop").classList.remove("open");
           renderStaffOperations();
@@ -1883,9 +1906,8 @@ Potongan: " + formatRp(deduction) + " (" + note + ")");
           return '<option value="' + p.barcode + '">' + p.name + ' (' + formatRp(p.price) + ' · Stok: ' + p.stock + ')</option>';
         }).join("");
         renderPosCart();
-      }
-
-      function addProductToCart(barcode) {
+    }
+    function addProductToCart(barcode) {
         var prod = state.kiosProducts.find(function (p) { return p.barcode === barcode; });
         if (!prod) {
           alert("Barcode tidak ditemukan di database Kios Kos.");
@@ -2247,7 +2269,7 @@ Potongan: " + formatRp(deduction) + " (" + note + ")");
 
         else if (activeOwnerTab === "petugas") {
           box.innerHTML =
-            '<div class="card">' +
+           '<div class="card">' +
               '<h4 style="margin:0 0 10px;">Kelola ID & PIN Petugas</h4>' +
               state.staffAccounts.map(function (acc, i) {
                 return (
