@@ -6,600 +6,88 @@
   <title>Sistem Manajemen Properti & Kios Kos</title>
   <style>
     :root {
-      --bg: #f1f5f9;
-      --surface: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #cbd5e1;
-      --primary: #0f766e;
-      --primary-dark: #115e59;
-      --green-bg: #ecfdf5;
-      --green-border: #10b981;
-      --green-text: #065f46;
-      --yellow-bg: #fffbeb;
-      --yellow-border: #f59e0b;
-      --yellow-text: #92400e;
-      --red-bg: #fef2f2;
-      --red-border: #ef4444;
-      --red-text: #991b1b;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.45;
-    }
-
-    .app-shell {
-      max-width: 960px;
-      margin: 0 auto;
-      min-height: 100vh;
-      background: var(--bg);
-      padding-bottom: 48px;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
-    }
-
-    .brand-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      user-select: none;
-      cursor: pointer;
-    }
-
-    .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #0f766e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .brand-title {
-      font-weight: 700;
-      font-size: 15px;
-      line-height: 1.2;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      color: #94a3b8;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .badge-user {
-      background: rgba(255, 255, 255, 0.12);
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: transform 0.08s ease, opacity 0.15s ease;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-green {
-      background: #059669;
-      color: #ffffff;
-    }
-
-    .btn-yellow {
-      background: #d97706;
-      color: #ffffff;
-    }
-
-    .btn-red {
-      background: #dc2626;
-      color: #ffffff;
-    }
-
-    .btn-dark {
-      background: #1e293b;
-      color: #ffffff;
-    }
-
-    .btn-outline {
-      background: #ffffff;
-      color: var(--text);
-      border: 1.5px solid var(--border);
-    }
-
-    .btn-sm {
-      padding: 6px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
-
-    .btn-block {
-      width: 100%;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #334155;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      font-size: 14px;
-      font-family: inherit;
-      background: #ffffff;
-      color: var(--text);
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    input[readonly] {
-      background: #f8fafc;
-      color: #334155;
-      font-weight: 700;
-    }
-
-    .container {
-      padding: 16px;
-    }
-
-    .card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-      margin-bottom: 16px;
-    }
-
-    .login-card {
-      max-width: 420px;
-      margin: 28px auto;
-      padding: 24px 20px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .pill-teal {
-      background: #ccfbf1;
-      color: #0f766e;
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 14px;
-      margin-top: 12px;
-    }
-
-    .big-menu-card {
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: border-color 0.15s ease, transform 0.1s ease;
-    }
-
-    .big-menu-card:hover {
-      border-color: var(--primary);
-    }
-
-    .big-menu-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .due-panel {
-      background: #fef2f2;
-      border: 2px solid #fca5a5;
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 18px;
-    }
-
-    .due-item {
-      background: #ffffff;
-      border-left: 5px solid #dc2626;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .address-group {
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .address-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      padding-bottom: 10px;
-      margin-bottom: 12px;
-      border-bottom: 1px dashed #cbd5e1;
-    }
-
-    .unit-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-    }
-
-    .unit-box {
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
-      border: 2px solid;
-      transition: transform 0.1s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 112px;
-    }
-
-    .unit-box:active {
-      transform: scale(0.98);
-    }
-
-    .unit-green {
-      background: var(--green-bg);
-      border-color: var(--green-border);
-      color: var(--green-text);
-    }
-
-    .unit-yellow {
-      background: var(--yellow-bg);
-      border-color: var(--yellow-border);
-      color: var(--yellow-text);
-    }
-
-    .unit-red {
-      background: var(--red-bg);
-      border-color: var(--red-border);
-      color: var(--red-text);
-    }
-
-    .unit-status-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      width: fit-content;
-    }
-
-    .unit-green .unit-status-badge {
-      background: #10b981;
-      color: #ffffff;
-    }
-
-    .unit-yellow .unit-status-badge {
-      background: #f59e0b;
-      color: #ffffff;
-    }
-
-    .unit-red .unit-status-badge {
-      background: #ef4444;
-      color: #ffffff;
-    }
-
-    .pkg-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-      }
-    .pkg-btn {
-      padding: 10px 8px;
-      border-radius: 10px;
-      border: 2px solid #cbd5e1;
-      background: #ffffff;
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-      text-align: center;
-      color: #334155;
-    }
-
-    .pkg-btn.active {
-      border-color: #0f766e;
-      background: #ccfbf1;
-      color: #0f766e;
-    }
-
-    .pkg-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.62);
-      z-index: 60;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      overflow-y: auto;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 480px;
-      background: #ffffff;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
-      max-height: 92vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .modal-header {
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      border-bottom: 2px solid;
-    }
-
-    .modal-theme-green .modal-header {
-      background: #d1fae5;
-      border-color: #10b981;
-      color: #065f46;
-    }
-
-    .modal-theme-yellow .modal-header {
-      background: #fef3c7;
-      border-color: #f59e0b;
-      color: #92400e;
-    }
-
-    .modal-theme-red .modal-header {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #991b1b;
-    }
-
-    .modal-theme-neutral .modal-header {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-      color: #0f172a;
-    }
-
-    .modal-body {
-      padding: 16px;
-      overflow-y: auto;
-    }
-
-    .modal-close {
-      background: rgba(255, 255, 255, 0.8);
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .owner-tabs {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 14px;
-    }
-
-    .owner-tab {
-      white-space: nowrap;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1.5px solid #cbd5e1;
-      background: #ffffff;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .owner-tab.active {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #0f172a;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .stat-val {
-      font-size: 16px;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 9px 8px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    th {
-      background: #f8fafc;
-      font-weight: 700;
-      color: #475569;
-    }
-
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .alert-box {
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .alert-red {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fca5a5;
-    }
-
-    .alert-green {
-      background: #d1fae5;
-      color: #065f46;
-      border: 1px solid #6ee7b7;
-    }
-
-    .alert-yellow {
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #fcd34d;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    #printArea {
-      display: none;
-    }
-
+      --bg: #f1f5f9; --surface: #fff; --text: #0f172a; --muted: #64748b;
+      --border: #cbd5e1; --primary: #0f766e; --primary-dark: #115e59;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.45; }
+    .app-shell { max-width: 960px; margin: 0 auto; min-height: 100vh; padding-bottom: 48px; }
+    .topbar { position: sticky; top: 0; z-index: 30; background: #0f172a; color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 2px 8px rgba(15,23,42,.18); }
+    .brand-area { display: flex; align-items: center; gap: 10px; user-select: none; cursor: pointer; }
+    .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .brand-title { font-weight: 700; font-size: 15px; line-height: 1.2; }
+    .brand-sub { font-size: 11px; color: #94a3b8; }
+    .topbar-actions, .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .badge-user { background: rgba(255,255,255,.14); padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .btn { border: none; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-green { background: #059669; color: #fff; }
+    .btn-red { background: #dc2626; color: #fff; }
+    .btn-dark { background: #1e293b; color: #fff; }
+    .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+    .btn-block { width: 100%; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #334155; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); font-size: 14px; font-family: inherit; background: #fff; color: var(--text); }
+    input:focus, select:focus { outline: none; border-color: var(--primary); }
+    input[readonly] { background: #f8fafc; color: #334155; font-weight: 700; }
+    .container { padding: 16px; }
+    .card, .address-group { background: var(--surface); border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(15,23,42,.04); margin-bottom: 16px; }
+    .login-card { max-width: 420px; margin: 28px auto; padding: 24px 20px; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .pill-teal { background: #ccfbf1; color: var(--primary); }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 12px; }
+    .big-menu-card { background: #fff; border: 2px solid var(--border); border-radius: 18px; padding: 20px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 16px; }
+    .big-menu-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .due-panel { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 16px; padding: 14px; margin-bottom: 18px; }
+    .due-item { background: #fff; border-left: 5px solid #dc2626; border-radius: 10px; padding: 10px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .address-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px dashed var(--border); }
+    .unit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .unit-box { border-radius: 14px; padding: 12px; cursor: pointer; border: 2px solid; display: flex; flex-direction: column; justify-content: space-between; min-height: 112px; }
+    .unit-green { background: #ecfdf5; border-color: #10b981; color: #065f46; }
+    .unit-yellow { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+    .unit-red { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+    .unit-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 999px; text-transform: uppercase; margin-bottom: 6px; width: fit-content; color: #fff; }
+    .unit-green .unit-badge { background: #10b981; }
+    .unit-yellow .unit-badge { background: #f59e0b; }
+    .unit-red .unit-badge { background: #ef4444; }
+    .pkg-tabs, .row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pkg-btn { padding: 10px 8px; border-radius: 10px; border: 2px solid var(--border); background: #fff; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; color: #334155; }
+    .pkg-btn.active { border-color: var(--primary); background: #ccfbf1; color: var(--primary); }
+    .pkg-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.62); z-index: 60; display: none; align-items: center; justify-content: center; padding: 14px; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { width: 100%; max-width: 480px; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,.28); max-height: 92vh; display: flex; flex-direction: column; }
+    .modal-header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 2px solid; }
+    .theme-green .modal-header { background: #d1fae5; border-color: #10b981; color: #065f46; }
+    .theme-yellow .modal-header { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    .theme-red .modal-header { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+    .theme-neutral .modal-header { background: #f1f5f9; border-color: var(--border); color: var(--text); }
+    .modal-body { padding: 16px; overflow-y: auto; }
+    .modal-close { background: rgba(255,255,255,.85); border: none; width: 30px; height: 30px; border-radius: 999px; font-size: 18px; font-weight: 700; cursor: pointer; }
+    .owner-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; }
+    .owner-tab { white-space: nowrap; padding: 8px 12px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .owner-tab.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; }
+    .stat-val { font-size: 16px; font-weight: 800; margin-top: 4px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-weight: 700; color: #475569; }
+    .alert-box { padding: 10px 12px; border-radius: 10px; font-size: 12px; margin-bottom: 12px; font-weight: 600; }
+    .alert-red { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert-green { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .alert-yellow { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .hidden, #printArea { display: none !important; }
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printArea, #printArea * {
-        visibility: visible;
-      }
-      #printArea {
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 20px;
-        background: #ffffff;
-        color: #000000;
-      }
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: #fff; color: #000; }
     }
   </style>
 </head>
@@ -608,7 +96,7 @@
     <header class="topbar">
       <div class="brand-area" id="secretBrandTrigger">
         <div class="brand-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/>
           </svg>
         </div>
@@ -617,34 +105,27 @@
           <div class="brand-sub">Operasional Penyewaan & Inventaris</div>
         </div>
       </div>
-      <div class="topbar-actions" id="topbarUserControls" style="display:none;">
+      <div class="topbar-actions hidden" id="topbarUserControls">
         <span class="badge-user" id="activeRoleLabel">Petugas</span>
         <button type="button" class="btn btn-outline btn-sm" id="btnSwitchAccount">Keluar</button>
       </div>
     </header>
-
     <main class="container" id="viewLogin">
       <div class="card login-card">
         <span class="pill pill-teal">Akses Operasional</span>
         <h2 style="margin:10px 0 4px; font-size:20px;">Login Akun Petugas</h2>
-        <p style="margin:0 0 16px; font-size:13px; color:var(--muted);">
-          Masukkan ID Login dan PIN sesuai penugasan wilayah Anda.
-        </p>
-
+        <p style="margin:0 0 16px; font-size:13px; color:var(--muted);">Masukkan ID Login dan PIN sesuai penugasan wilayah Anda.</p>
         <div id="loginError" class="alert-box alert-red hidden"></div>
-
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="return false;">
           <div class="form-group">
             <label for="loginId">ID Login *</label>
-            <input type="text" id="loginId" placeholder="Masukkan ID Login" autocomplete="off" required />
+            <input type="text" id="loginId" placeholder="Masukkan ID Login" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="loginPin">PIN Rahasia *</label>
-            <input type="password" id="loginPin" inputmode="numeric" placeholder="Masukkan PIN" required />
+            <input type="password" id="loginPin" inputmode="numeric" placeholder="Masukkan PIN" />
           </div>
-          <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-block" style="padding:12px; font-size:14px;">
-            Masuk ke Sistem
-          </button>
+          <button type="button" id="btnLoginSubmit" class="btn btn-primary btn-block" style="padding:12px; font-size:14px;">Masuk ke Sistem</button>
         </form>
       </div>
     </main>
@@ -656,26 +137,20 @@
         <div class="menu-grid">
           <button type="button" class="big-menu-card" id="openKosUnitsBtn">
             <div class="big-menu-icon" style="background:#d1fae5; color:#065f46;">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2"/>
-                <circle cx="8.5" cy="10.5" r="1.5"/>
-              </svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2"/><circle cx="8.5" cy="10.5" r="1.5"/></svg>
             </div>
             <div>
-              <div style="font-weight:800; font-size:16px; color:#0f172a;">Kelola Kamar Kos</div>
-              <div style="font-size:12px; color:#64748b; margin-top:3px;">Daftar jatuh tempo, sewa baru, perpanjangan & check-out</div>
+              <div style="font-weight:800; font-size:16px;">Kelola Kamar Kos</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:3px;">Daftar jatuh tempo, sewa baru, perpanjangan & check-out</div>
             </div>
           </button>
-
           <button type="button" class="big-menu-card" id="openKiosPosBtn">
             <div class="big-menu-icon" style="background:#fef3c7; color:#92400e;">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M3 4h2v16H3zm4 0h1v16H7zm3 0h2v16h-2zm4 0h1v16h-1zm3 0h4v16h-4z"/>
-              </svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 4h2v16H3zm4 0h1v16H7zm3 0h2v16h-2zm4 0h1v16h-1zm3 0h4v16h-4z"/></svg>
             </div>
             <div>
-              <div style="font-weight:800; font-size:16px; color:#0f172a;">Kasir Kios Kos</div>
-              <div style="font-size:12px; color:#64748b; margin-top:3px;">Scan barcode barang, otomatis kurangi stok & cetak nota</div>
+              <div style="font-weight:800; font-size:16px;">Kasir Kios Kos</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:3px;">Scan barcode barang, otomatis kurangi stok & cetak nota</div>
             </div>
           </button>
         </div>
@@ -683,121 +158,80 @@
     </main>
 
     <main class="container hidden" id="viewStaffUnits">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+      <div class="flex-between" style="margin-bottom:12px; flex-wrap:wrap;">
         <button type="button" class="btn btn-outline btn-sm hidden" id="btnBackToKosMenu">← Menu Utama Kos</button>
         <div style="font-size:12px; font-weight:700; color:#475569;">
-          Warna Kotak: <span style="color:#059669;">● Hijau (Kosong)</span> · <span style="color:#d97706;">● Kuning (Terisi)</span> · <span style="color:#dc2626;">● Merah (H-7 Jatuh Tempo)</span>
+          Warna: <span style="color:#059669;">● Hijau (Kosong)</span> · <span style="color:#d97706;">● Kuning (Terisi)</span> · <span style="color:#dc2626;">● Merah (H-7 Jatuh Tempo)</span>
         </div>
       </div>
-
-      <section class="due-panel" id="dueAlertSection">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+      <section class="due-panel">
+        <div class="flex-between">
           <strong style="color:#991b1b; font-size:14px;">⚠️ Daftar Penagihan Jatuh Tempo (H-7 s.d. Lewat Tempo)</strong>
           <span class="pill" style="background:#dc2626; color:#fff;" id="dueCountBadge">0 Unit</span>
         </div>
         <div id="dueListContainer" style="margin-top:6px;"></div>
       </section>
-
       <div id="addressGroupedUnitsContainer"></div>
     </main>
 
     <main class="container hidden" id="viewKiosPos">
-      <div style="margin-bottom:12px;">
-        <button type="button" class="btn btn-outline btn-sm" id="btnBackFromPos">← Menu Utama Kos</button>
-      </div>
-
+      <div style="margin-bottom:12px;"><button type="button" class="btn btn-outline btn-sm" id="btnBackFromPos">← Menu Utama Kos</button></div>
       <div class="card">
         <h3 style="margin:0 0 4px;">Kasir Kios Kos (Scan Barcode)</h3>
-        <p style="margin:0 0 12px; font-size:12px; color:var(--muted);">
-          Arahkan scanner barcode atau pilih barang dari daftar untuk mengurangi stok secara otomatis.
-        </p>
-
+        <p style="margin:0 0 12px; font-size:12px; color:var(--muted);">Arahkan scanner barcode atau pilih barang manual untuk mengurangi stok otomatis.</p>
         <div class="row-2" style="margin-bottom:12px;">
-          <div>
-            <label for="barcodeScanInput">Scan / Ketik Kode Barcode</label>
-            <input type="text" id="barcodeScanInput" placeholder="Contoh: 8991001" autocomplete="off" />
-          </div>
-          <div>
-            <label for="quickProductSelect">Pilih Barang Manual</label>
-            <select id="quickProductSelect"></select>
-          </div>
+          <div><label for="barcodeScanInput">Scan / Ketik Kode Barcode</label><input type="text" id="barcodeScanInput" placeholder="Contoh: 8991001" autocomplete="off" /></div>
+          <div><label for="quickProductSelect">Pilih Barang Manual</label><select id="quickProductSelect"></select></div>
         </div>
-
         <button type="button" class="btn btn-primary btn-block" id="btnAddScanItem">+ Tambah ke Keranjang</button>
       </div>
-
       <div class="card">
         <h4 style="margin:0 0 10px;">Keranjang Belanja Kios</h4>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Barang</th>
-                <th>Harga</th>
-                <th>Qty</th>
-                <th>Subtotal</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="posCartBody"></tbody>
-          </table>
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:12px; border-top:2px solid #e2e8f0;">
+        <div class="table-wrap" id="posCartWrap"></div>
+        <div class="flex-between" style="margin-top:14px; padding-top:12px; border-top:2px solid #e2e8f0;">
           <span style="font-weight:700;">Total Belanja</span>
-          <span style="font-size:18px; font-weight:800; color:#0f766e;" id="posTotalDisplay">Rp 0</span>
+          <span style="font-size:18px; font-weight:800; color:var(--primary);" id="posTotalDisplay">Rp 0</span>
         </div>
-
         <div class="row-2" style="margin-top:12px;">
           <button type="button" class="btn btn-outline" id="btnClearCart">Kosongkan</button>
           <button type="button" class="btn btn-green" id="btnCheckoutPos">Selesaikan & Cetak Struk</button>
         </div>
       </div>
     </main>
-    <main class="container hidden" id="viewOwnerDashboard">
-      <div class="owner-tabs" id="ownerTabBar">
-        <button type="button" class="owner-tab active" data-tab="ringkasan">1. Ringkasan</button>
-        <button type="button" class="owner-tab" data-tab="unit">2. Unit & Alamat</button>
-        <button type="button" class="owner-tab" data-tab="tarif">3. Kunci Tarif</button>
-        <button type="button" class="owner-tab" data-tab="kios">4. Stok Kios</button>
-        <button type="button" class="owner-tab" data-tab="keuangan">5. Keuangan</button>
-        <button type="button" class="owner-tab" data-tab="pengeluaran">6. Pengeluaran</button>
-        <button type="button" class="owner-tab" data-tab="petugas">7. Akun Petugas</button>
-        <button type="button" class="owner-tab" data-tab="telegram">8. Telegram & PIN</button>
-      </div>
 
+    <main class="container hidden" id="viewOwnerDashboard">
+      <div class="owner-tabs" id="ownerTabBar"></div>
       <div id="ownerTabContent"></div>
     </main>
   </div>
 
   <div class="modal-backdrop" id="unitModalBackdrop">
-    <div class="modal-box modal-theme-green" id="unitModalBox">
+    <div class="modal-box theme-green" id="unitModalBox">
       <div class="modal-header">
         <div>
-          <div style="font-size:11px; font-weight:800; text-transform:uppercase;" id="modalStatusTag">Unit Kosong</div>
-          <div style="font-size:17px; font-weight:800;" id="modalUnitTitle">Kamar 01</div>
-          <div style="font-size:11px; opacity:0.9;" id="modalUnitAddress">Alamat Properti</div>
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase;" id="modalStatusTag"></div>
+          <div style="font-size:17px; font-weight:800;" id="modalUnitTitle"></div>
+          <div style="font-size:11px; opacity:.9;" id="modalUnitAddress"></div>
         </div>
-        <button type="button" class="modal-close" id="btnCloseUnitModal">×</button>
+        <button type="button" class="modal-close" data-close-modal="unitModalBackdrop">×</button>
       </div>
       <div class="modal-body" id="unitModalBody"></div>
     </div>
   </div>
-
   <div class="modal-backdrop" id="ownerPinBackdrop">
-    <div class="modal-box modal-theme-neutral" style="max-width:360px;">
+    <div class="modal-box theme-neutral" style="max-width:360px;">
       <div class="modal-header">
-        <strong>Verifikasi Akses</strong>
-        <button type="button" class="modal-close" id="btnCloseOwnerPin">×</button>
+        <strong>Verifikasi Akses Owner</strong>
+        <button type="button" class="modal-close" data-close-modal="ownerPinBackdrop">×</button>
       </div>
       <div class="modal-body">
         <div id="ownerPinErr" class="alert-box alert-red hidden">PIN salah.</div>
-        <form id="ownerPinForm">
+        <form id="ownerPinForm" onsubmit="return false;">
           <div class="form-group">
             <label for="secretOwnerPinInput">Masukkan PIN Otorisasi</label>
-            <input type="password" id="secretOwnerPinInput" inputmode="numeric" placeholder="••••" required />
+            <input type="password" id="secretOwnerPinInput" inputmode="numeric" placeholder="••••" />
           </div>
-          <button type="submit" class="btn btn-dark btn-block">Buka Panel</button>
+          <button type="button" id="btnVerifyOwnerPin" class="btn btn-dark btn-block">Buka Panel</button>
         </form>
       </div>
     </div>
@@ -809,209 +243,57 @@
     (function () {
       "use strict";
 
-      var memoryStorage = {};
-      function safeGetItem(key) {
-        try {
-          return window.localStorage.getItem(key);
-        } catch (e) {
-          return memoryStorage[key] || null;
-        }
-      }
-      function safeSetItem(key, val) {
-        memoryStorage[key] = val;
-        try {
-          window.localStorage.setItem(key, val);
-        } catch (e) {
-        }
+      var STORAGE_KEY = "melisa_properti_system_v5";
+      var memStore = {};
+      var state = null, currentUser = null, posCart = [], activeOwnerTab = "ringkasan";
+
+      function $(id) { return document.getElementById(id); }
+      function fmtRp(n) { return "Rp " + Number(n || 0).toLocaleString("id-ID"); }
+
+      function shiftDate(baseIso, addDays, addMonths, addYears) {
+        var p = baseIso.split("-");
+        var d = new Date(Number(p[0]) + (addYears || 0), Number(p[1]) - 1 + (addMonths || 0), Number(p[2]) + (addDays || 0));
+        return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       }
 
       function todayStr() {
-        return formatISODate(new Date());
+        var d = new Date();
+        return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       }
 
-      function addDaysStr(baseIso, days) {
-        var parts = baseIso.split("-");
-        var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        d.setDate(d.getDate() + days);
-        return formatISODate(d);
-      }
-
-      function addMonthsStr(baseIso, months) {
-        var parts = baseIso.split("-");
-        var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        d.setMonth(d.getMonth() + months);
-        return formatISODate(d);
-      }
-
-      function addYearsStr(baseIso, years) {
-        var parts = baseIso.split("-");
-        var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        d.setFullYear(d.getFullYear() + years);
-        return formatISODate(d);
-      }
-
-      function formatISODate(d) {
-        var y = d.getFullYear();
-        var m = String(d.getMonth() + 1).padStart(2, "0");
-        var day = String(d.getDate()).padStart(2, "0");
-        return y + "-" + m + "-" + day;
-      }
-
-      function formatDisplayDate(iso) {
+      function fmtDate(iso) {
         if (!iso) return "-";
-        var bulan = [
-          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        ];
+        var bln = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         var p = iso.split("-");
-        if (p.length !== 3) return iso;
-        return Number(p[2]) + " " + bulan[Number(p[1]) - 1] + " " + p[0];
+        return p.length === 3 ? (Number(p[2]) + " " + bln[Number(p[1]) - 1] + " " + p[0]) : iso;
       }
 
-      function diffDaysFromToday(targetIso) {
-        var now = new Date();
-        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        var p = targetIso.split("-");
-        var target = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-        return Math.round((target - today) / (1000 * 60 * 60 * 24));
+      function diffDays(startIso, endIso) {
+        var a = startIso.split("-"), b = endIso.split("-");
+        return Math.round((new Date(b[0], b[1] - 1, b[2]) - new Date(a[0], a[1] - 1, a[2])) / 86400000);
       }
 
-      function diffDaysBetween(startIso, endIso) {
-        var p1 = startIso.split("-");
-        var p2 = endIso.split("-");
-        var d1 = new Date(Number(p1[0]), Number(p1[1]) - 1, Number(p1[2]));
-        var d2 = new Date(Number(p2[0]), Number(p2[1]) - 1, Number(p2[2]));
-        return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+      function renderTable(headers, rows, emptyMsg) {
+        if (!rows.length) return '<div style="text-align:center;color:var(--muted);padding:12px;font-size:12px;">' + (emptyMsg || "Belum ada data.") + '</div>';
+        return '<table><thead><tr>' + headers.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+          rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table>';
       }
 
-      function formatRp(num) {
-        return "Rp " + Number(num || 0).toLocaleString("id-ID");
-      }
-
-      function getInitialState() {
-        var today = todayStr();
+      function getDefaultState() {
+        var t = todayStr();
         return {
-          ownerPin: "1234",
-          telegramBotToken: "",
-          telegramChatId: "",
+          ownerPin: "1234", telegramBotToken: "", telegramChatId: "",
           staffAccounts: [
             { id: "hendra", name: "Hendra (Penjaga Kos)", pin: "1111", role: "kos" },
             { id: "sari", name: "Sari (Pengawas Rumah & Ruko)", pin: "2222", role: "properti" }
           ],
           units: [
-            {
-              id: "U-01",
-              name: "Kamar 01",
-              type: "Kamar Kos",
-              address: "Jl. Melati No. 10, Arjawinangun, Cirebon",
-              dailyRate: 65000,
-              monthlyRate: 850000,
-              yearlyRate: 9500000,
-              depositAmount: 500000,
-              tenant: null
-            },
-            {
-              id: "U-02",
-              name: "Kamar 02",
-              type: "Kamar Kos",
-              address: "Jl. Melati No. 10, Arjawinangun, Cirebon",
-              dailyRate: 65000,
-              monthlyRate: 850000,
-              yearlyRate: 9500000,
-              depositAmount: 500000,
-              tenant: {
-                name: "Rina Wulandari",
-                phone: "081234567890",
-                ktp: "3209124505980002",
-                packageType: "bulanan",
-                checkIn: addDaysStr(today, -25),
-                checkOut: addDaysStr(today, 5),
-                rentPaid: 850000,
-                depositPaid: 500000,
-                folioCharges: [
-                  { desc: "Sewa Bulanan Awal", amount: 850000, date: addDaysStr(today, -25) }
-                ]
-              }
-            },
-            {
-              id: "U-03",
-              name: "Kamar 03",
-              type: "Kamar Kos",
-              address: "Jl. Melati No. 10, Arjawinangun, Cirebon",
-              dailyRate: 65000,
-              monthlyRate: 850000,
-              yearlyRate: 9500000,
-              depositAmount: 500000,
-              tenant: {
-                name: "Dimas Pratama",
-                phone: "085722334455",
-                ktp: "3209121102990004",
-                packageType: "bulanan",
-                checkIn: addDaysStr(today, -10),
-                checkOut: addDaysStr(today, 20),
-                rentPaid: 850000,
-                depositPaid: 500000,
-                folioCharges: [
-                  { desc: "Sewa Bulanan Awal", amount: 850000, date: addDaysStr(today, -10) }
-                ]
-              }
-            },
-            {
-              id: "U-04",
-              name: "Kamar 04",
-              type: "Kamar Kos",
-              address: "Jl. Melati No. 10, Arjawinangun, Cirebon",
-              dailyRate: 65000,
-              monthlyRate: 850000,
-              yearlyRate: 9500000,
-              depositAmount: 500000,
-              tenant: null
-            },
-            {
-              id: "U-05",
-              name: "Rumah Blok A1",
-              type: "Rumah Tinggal",
-              address: "Perum Griya Indah Blok A, Cirebon",
-              dailyRate: 0,
-              monthlyRate: 2500000,
-              yearlyRate: 27000000,
-              depositAmount: 2000000,
-              tenant: {
-                name: "Bapak Budi Santoso",
-                phone: "081399887766",
-                ktp: "3274011208850001",
-                packageType: "tahunan",
-                checkIn: addDaysStr(today, -120),
-                checkOut: addDaysStr(today, 245),
-                rentPaid: 27000000,
-                depositPaid: 2000000,
-                folioCharges: [
-                  { desc: "Sewa Tahunan", amount: 27000000, date: addDaysStr(today, -120) }
-                ]
-              }
-            },
-            id: "U-06",
-              name: "Ruko Pasar No. 03",
-              type: "Toko / Ruko",
-              address: "Jl. Raya Pasar Pagi No. 03, Cirebon",
-              dailyRate: 0,
-              monthlyRate: 3500000,
-              yearlyRate: 38000000,
-              depositAmount: 3000000,
-              tenant: {
-                name: "Toko Jaya Abadi (Ibu Dewi)",
-                phone: "082144556677",
-                ktp: "3274025504900003",
-                packageType: "bulanan",
-                checkIn: addDaysStr(today, -27),
-                checkOut: addDaysStr(today, 3),
-                rentPaid: 3500000,
-                depositPaid: 3000000,
-                folioCharges: [
-                  { desc: "Sewa Ruko Bulanan", amount: 3500000, date: addDaysStr(today, -27) }
-                ]
-              }
-            }
+            { id: "U-01", name: "Kamar 01", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: null },
+            { id: "U-02", name: "Kamar 02", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Rina Wulandari", phone: "081234567890", ktp: "3209124505980002", packageType: "bulanan", checkIn: shiftDate(t, -25), checkOut: shiftDate(t, 5), rentPaid: 850000, depositPaid: 500000, folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -25) }] } },
+            { id: "U-03", name: "Kamar 03", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Dimas Pratama", phone: "085722334455", ktp: "3209121102990004", packageType: "bulanan", checkIn: shiftDate(t, -10), checkOut: shiftDate(t, 20), rentPaid: 850000, depositPaid: 500000, folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -10) }] } },
+            { id: "U-04", name: "Kamar 04", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: null },
+            { id: "U-05", name: "Rumah Blok A1", type: "Rumah Tinggal", address: "Perum Griya Indah Blok A, Cirebon", dailyRate: 0, monthlyRate: 2500000, yearlyRate: 27000000, depositAmount: 2000000, tenant: { name: "Bapak Budi Santoso", phone: "081399887766", ktp: "3274011208850001", packageType: "tahunan", checkIn: shiftDate(t, -120), checkOut: shiftDate(t, 245), rentPaid: 27000000, depositPaid: 2000000, folioCharges: [{ desc: "Sewa Tahunan", amount: 27000000, date: shiftDate(t, -120) }] } },
+            { id: "U-06", name: "Ruko Pasar No. 03", type: "Toko / Ruko", address: "Jl. Raya Pasar Pagi No. 03, Cirebon", dailyRate: 0, monthlyRate: 3500000, yearlyRate: 38000000, depositAmount: 3000000, tenant: { name: "Toko Jaya Abadi (Ibu Dewi)", phone: "082144556677", ktp: "3274025504900003", packageType: "bulanan", checkIn: shiftDate(t, -27), checkOut: shiftDate(t, 3), rentPaid: 3500000, depositPaid: 3000000, folioCharges: [{ desc: "Sewa Ruko Bulanan", amount: 3500000, date: shiftDate(t, -27) }] } }
           ],
           kiosProducts: [
             { barcode: "8991001", name: "Air Mineral 600ml", price: 4000, stock: 45 },
@@ -1021,1303 +303,532 @@
             { barcode: "8991005", name: "Detergen Sachet", price: 2500, stock: 30 }
           ],
           transactions: [
-            {
-              id: "TRX-101",
-              date: today,
-              category: "Sewa Properti",
-              unitName: "Kamar 02",
-              desc: "Sewa Bulanan - Rina Wulandari",
-              amount: 850000
-            },
-            {
-              id: "TRX-102",
-              date: today,
-              category: "Kios Kos",
-              unitName: "Kios Kos",
-              desc: "Penjualan Kios (3 item)",
-              amount: 15500
-            }
+            { id: "TRX-101", date: t, category: "Sewa Properti", unitName: "Kamar 02", desc: "Sewa Bulanan - Rina Wulandari", amount: 850000 },
+            { id: "TRX-102", date: t, category: "Kios Kos", unitName: "Kios Kos", desc: "Penjualan Kios (3 item)", amount: 15500 }
           ],
-          expenses: [
-            {
-              id: "EXP-01",
-              date: today,
-              category: "Kebersihan & Listrik",
-              desc: "Token Listrik Area Kos",
-              amount: 200000
-            }
-          ]
+          expenses: [{ id: "EXP-01", date: t, category: "Kebersihan & Listrik", desc: "Token Listrik Area Kos", amount: 200000 }]
         };
-      }
-
-      var STORAGE_KEY = "melisa_properti_system_v5";
-      var state = null;
-      var currentUser = null;
-      var posCart = [];
-      var activeOwnerTab = "ringkasan";
-
-      function loadState() {
-        var fallback = getInitialState();
-        var raw = safeGetItem(STORAGE_KEY);
-        if (raw) {
-          try {
-            var parsed = JSON.parse(raw);
-            state = Object.assign({}, fallback, parsed);
-            if (!state.ownerPin) state.ownerPin = "1234";
-            if (!Array.isArray(state.staffAccounts) || state.staffAccounts.length === 0) {
-              state.staffAccounts = fallback.staffAccounts;
-            }
-            if (!Array.isArray(state.units)) state.units = fallback.units;
-            if (!Array.isArray(state.kiosProducts)) state.kiosProducts = fallback.kiosProducts;
-            if (!Array.isArray(state.transactions)) state.transactions = fallback.transactions;
-            if (!Array.isArray(state.expenses)) state.expenses = fallback.expenses;
-          } catch (e) {
-            state = fallback;
-          }
-        } else {
-          state = fallback;
-        }
-        saveState();
       }
 
       function saveState() {
-        safeSetItem(STORAGE_KEY, JSON.stringify(state));
+        var json = JSON.stringify(state);
+        memStore[STORAGE_KEY] = json;
+        try { window.localStorage.setItem(STORAGE_KEY, json); } catch (e) {}
       }
 
-      function getUnitVisualStatus(unit) {
-        if (!unit.tenant) {
-          return {
-            color: "green",
-            label: "Kosong",
-            daysLeft: null
-          };
-        }
-        var daysLeft = diffDaysFromToday(unit.tenant.checkOut);
-        if (daysLeft <= 7) {
-          return {
-            color: "red",
-            label: daysLeft < 0 ? "Telat " + Math.abs(daysLeft) + " Hari" : (daysLeft === 0 ? "Jatuh Tempo Hari Ini" : "H-" + daysLeft + " Jatuh Tempo"),
-            daysLeft: daysLeft
-          };
-        }
-        return {
-          color: "yellow",
-          label: "Terisi (" + daysLeft + " hari lagi)",
-          daysLeft: daysLeft
-        };
+      function loadState() {
+        var def = getDefaultState(), raw = null;
+        try { raw = window.localStorage.getItem(STORAGE_KEY); } catch (e) { raw = memStore[STORAGE_KEY]; }
+        try { state = raw ? Object.assign({}, def, JSON.parse(raw)) : def; } catch (e) { state = def; }
+        if (!state.ownerPin) state.ownerPin = "1234";
+        saveState();
       }
 
-      function sendTelegramAlert(message) {
+      function getUnitStatus(u) {
+        if (!u.tenant) return { color: "green", label: "Kosong", days: null };
+        var d = diffDays(todayStr(), u.tenant.checkOut);
+        if (d <= 7) return { color: "red", label: d < 0 ? "Telat " + Math.abs(d) + " Hari" : (d === 0 ? "Jatuh Tempo Hari Ini" : "H-" + d + " Jatuh Tempo"), days: d };
+        return { color: "yellow", label: "Terisi (" + d + " hari lagi)", days: d };
+      }
+
+      function sendTelegram(msg) {
         if (!state.telegramBotToken || !state.telegramChatId) return;
-        var url = "https://api.telegram.org/bot" + encodeURIComponent(state.telegramBotToken) + "/sendMessage";
-        fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: state.telegramChatId,
-            text: message
-          })
+        fetch("https://api.telegram.org/bot" + encodeURIComponent(state.telegramBotToken) + "/sendMessage", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: state.telegramChatId, text: msg })
         }).catch(function () {});
       }
 
-      function showView(viewId) {
-        var views = ["viewLogin", "viewKosMenu", "viewStaffUnits", "viewKiosPos", "viewOwnerDashboard"];
-        views.forEach(function (id) {
-          var el = document.getElementById(id);
-          if (el) {
-            if (id === viewId) el.classList.remove("hidden");
-            else el.classList.add("hidden");
-          }
+      function triggerPrint(html) {
+        $("printArea").innerHTML = html;
+        setTimeout(function () { window.print(); }, 150);
+      }
+
+      function showView(id) {
+        ["viewLogin", "viewKosMenu", "viewStaffUnits", "viewKiosPos", "viewOwnerDashboard"].forEach(function (v) {
+          $(v).classList.toggle("hidden", v !== id);
         });
-
-        var topControls = document.getElementById("topbarUserControls");
-        if (viewId === "viewLogin") {
-          topControls.style.display = "none";
-        } else {
-          topControls.style.display = "flex";
-        }
+        $("topbarUserControls").classList.toggle("hidden", id === "viewLogin");
       }
 
-      function handleLoginSubmit(e) {
-        if (e) e.preventDefault();
-        var idInput = document.getElementById("loginId").value.trim().toLowerCase();
-        var pinInput = document.getElementById("loginPin").value.trim();
-        var errBox = document.getElementById("loginError");
-        errBox.classList.add("hidden");
-
-        if (!idInput || !pinInput) {
-          errBox.textContent = "Harap isi ID Login dan PIN Rahasia terlebih dahulu.";
-          errBox.classList.remove("hidden");
-          return;
-        }
-
-        if (idInput === "owner" && pinInput === String(state.ownerPin)) {
-          document.getElementById("loginId").value = "";
-          document.getElementById("loginPin").value = "";
-          enterOwnerMode();
-          return;
-        }
-
-        var matched = state.staffAccounts.find(function (acc) {
-          return acc.id.toLowerCase() === idInput && String(acc.pin) === pinInput;
-        });
-
-        if (!matched) {
-          errBox.textContent = "ID Login atau PIN tidak sesuai. Silakan periksa kembali.";
-          errBox.classList.remove("hidden");
-          return;
-        }
-
-        currentUser = {
-          role: matched.role,
-          name: matched.name
-        };
-        document.getElementById("activeRoleLabel").textContent = matched.name;
-        document.getElementById("loginId").value = "";
-        document.getElementById("loginPin").value = "";
-
-        if (matched.role === "kos") {
-          showView("viewKosMenu");
-        } else {
-          renderStaffOperations();
-          showView("viewStaffUnits");
-        }
-      }
-
-      document.getElementById("loginForm").addEventListener("submit", handleLoginSubmit);
-
-      document.getElementById("btnSwitchAccount").addEventListener("click", function () {
-        currentUser = null;
-        posCart = [];
-        showView("viewLogin");
-      });
-
-      var tapCount = 0;
-      var tapTimer = null;
-      var holdTimer = null;
-      var brandTrigger = document.getElementById("secretBrandTrigger");
-
-      function openSecretOwnerModal() {
-        document.getElementById("ownerPinErr").classList.add("hidden");
-        document.getElementById("secretOwnerPinInput").value = "";
-        document.getElementById("ownerPinBackdrop").classList.add("open");
-        setTimeout(function () {
-          document.getElementById("secretOwnerPinInput").focus();
-        }, 100);
-      }
-
-      brandTrigger.addEventListener("click", function () {
-        tapCount++;
-        clearTimeout(tapTimer);
-        if (tapCount >= 5) {
-          tapCount = 0;
-          openSecretOwnerModal();
-        } else {
-          tapTimer = setTimeout(function () {
-            tapCount = 0;
-          }, 1500);
-        }
-      });
-
-      brandTrigger.addEventListener("touchstart", function () {
-        holdTimer = setTimeout(openSecretOwnerModal, 1500);
-      }, { passive: true });
-      brandTrigger.addEventListener("touchend", function () {
-        clearTimeout(holdTimer);
-      });
-      brandTrigger.addEventListener("touchcancel", function () {
-        clearTimeout(holdTimer);
-      });
-      brandTrigger.addEventListener("mousedown", function () {
-        holdTimer = setTimeout(openSecretOwnerModal, 1500);
-      });
-      brandTrigger.addEventListener("mouseup", function () {
-        clearTimeout(holdTimer);
-      });
-      brandTrigger.addEventListener("mouseleave", function () {
-        clearTimeout(holdTimer);
-      });
-
-      document.getElementById("btnCloseOwnerPin").addEventListener("click", function () {
-        document.getElementById("ownerPinBackdrop").classList.remove("open");
-      });
-
-      document.getElementById("ownerPinForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var pin = document.getElementById("secretOwnerPinInput").value.trim();
-        if (pin === String(state.ownerPin)) {
-          document.getElementById("ownerPinBackdrop").classList.remove("open");
-          enterOwnerMode();
-        } else {
-          document.getElementById("ownerPinErr").classList.remove("hidden");
-        }
-      });
-    function enterOwnerMode() {
+      function enterOwnerMode() {
         currentUser = { role: "owner", name: "Owner (Melisa)" };
-        document.getElementById("activeRoleLabel").textContent = "Owner";
+        $("activeRoleLabel").textContent = "Owner";
         renderOwnerDashboard();
         showView("viewOwnerDashboard");
       }
 
-      document.getElementById("openKosUnitsBtn").addEventListener("click", function () {
-        renderStaffOperations();
-        showView("viewStaffUnits");
-      });
+      function processLogin() {
+        var idVal = $("loginId").value.trim().toLowerCase();
+        var pinVal = $("loginPin").value.trim();
+        var err = $("loginError");
+        err.classList.add("hidden");
 
-      document.getElementById("openKiosPosBtn").addEventListener("click", function () {
-        renderPosView();
-        showView("viewKiosPos");
-      });
-
-      document.getElementById("btnBackToKosMenu").addEventListener("click", function () {
-        showView("viewKosMenu");
-      });
-
-      document.getElementById("btnBackFromPos").addEventListener("click", function () {
-        showView("viewKosMenu");
-      });
-
-      function getVisibleUnitsForStaff() {
-        if (!currentUser) return [];
-        if (currentUser.role === "kos") {
-          return state.units.filter(function (u) {
-            return u.type === "Kamar Kos";
-          });
-        }
-        return state.units.filter(function (u) {
-          return u.type !== "Kamar Kos";
-        });
-      }
-
-      function renderStaffOperations() {
-        var backBtn = document.getElementById("btnBackToKosMenu");
-        if (currentUser && currentUser.role === "kos") {
-          backBtn.classList.remove("hidden");
-        } else {
-          backBtn.classList.add("hidden");
-        }
-
-        var visibleUnits = getVisibleUnitsForStaff();
-
-        var dueUnits = visibleUnits.filter(function (u) {
-          return getUnitVisualStatus(u).color === "red";
-        });
-        document.getElementById("dueCountBadge").textContent = dueUnits.length + " Unit";
-        var dueContainer = document.getElementById("dueListContainer");
-
-        if (dueUnits.length === 0) {
-          dueContainer.innerHTML = '<div style="font-size:12px; color:#065f46; background:#d1fae5; padding:8px 10px; border-radius:8px; margin-top:6px;">Semua unit terisi masih aman di atas H-7 jatuh tempo.</div>';
-        } else {
-          dueContainer.innerHTML = dueUnits.map(function (u) {
-            var st = getUnitVisualStatus(u);
-            return (
-              '<div class="due-item">' +
-                '<div>' +
-                  '<div style="font-weight:800; font-size:13px;">' + u.name + ' — ' + u.tenant.name + '</div>' +
-                  '<div style="font-size:11px; color:#64748b;">' + u.address + '</div>' +
-                  '<div style="font-size:11px; font-weight:700; color:#dc2626; margin-top:2px;">Jatuh Tempo: ' + formatDisplayDate(u.tenant.checkOut) + ' (' + st.label + ')</div>' +
-                '</div>' +
-                '<button type="button" class="btn btn-red btn-sm" data-open-unit="' + u.id + '">Tindak Lanjuti</button>' +
-              '</div>'
-            );
-          }).join("");
-        }
-
-        var groups = {};
-        visibleUnits.forEach(function (u) {
-          var addrKey = (u.address || "Alamat Belum Diatur").trim();
-          if (!groups[addrKey]) groups[addrKey] = [];
-          groups[addrKey].push(u);
-        });
-
-        var groupContainer = document.getElementById("addressGroupedUnitsContainer");
-        var addressKeys = Object.keys(groups);
-
-        if (addressKeys.length === 0) {
-          groupContainer.innerHTML = '<div class="card">Belum ada unit properti yang terdaftar untuk akun ini.</div>';
+        if (!idVal || !pinVal) {
+          err.textContent = "Harap isi ID Login dan PIN Rahasia.";
+          err.classList.remove("hidden");
           return;
         }
-
-        groupContainer.innerHTML = addressKeys.map(function (addr) {
-          var unitsInAddr = groups[addr];
-          var boxesHtml = unitsInAddr.map(function (u) {
-            var st = getUnitVisualStatus(u);
-            var tenantLine = u.tenant
-              ? '<div style="font-size:12px; font-weight:700; margin-top:4px;">' + u.tenant.name + '</div><div style="font-size:11px; opacity:0.85;">Tempo: ' + formatDisplayDate(u.tenant.checkOut) + '</div>'
-              : '<div style="font-size:12px; font-weight:700; margin-top:4px;">Siap Disewa</div><div style="font-size:11px; opacity:0.85;">' + formatRp(u.monthlyRate) + '/bln</div>';
-
-            return (
-              '<div class="unit-box unit-' + st.color + '" data-open-unit="' + u.id + '">' +
-                '<div>' +
-                  '<span class="unit-status-badge">' + st.label + '</span>' +
-                  '<div style="font-size:15px; font-weight:800;">' + u.name + '</div>' +
-                  '<div style="font-size:11px; opacity:0.8;">' + u.type + '</div>' +
-                '</div>' +
-                '<div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(0,0,0,0.08);">' +
-                  tenantLine +
-                '</div>' +
-              '</div>'
-            );
-          }).join("");
-
-          return (
-            '<section class="address-group">' +
-              '<div class="address-header">' +
-                '<div>' +
-                  '<div style="font-size:11px; font-weight:700; color:#0f766e; text-transform:uppercase;">Lokasi Properti</div>' +
-                  '<div style="font-size:14px; font-weight:800; color:#0f172a;">📍 ' + addr + '</div>' +
-                '</div>' +
-                '<span class="pill pill-teal">' + unitsInAddr.length + ' Unit</span>' +
-              '</div>' +
-              '<div class="unit-grid">' + boxesHtml + '</div>' +
-            '</section>'
-          );
-        }).join("");
-
-        document.querySelectorAll("[data-open-unit]").forEach(function (el) {
-          el.addEventListener("click", function () {
-            var uid = el.getAttribute("data-open-unit");
-            openUnitModal(uid);
-          });
-        });
+        if (idVal === "owner" && pinVal === String(state.ownerPin)) {
+          $("loginId").value = ""; $("loginPin").value = "";
+          enterOwnerMode();
+          return;
+        }
+        var staff = state.staffAccounts.find(function (a) { return a.id.toLowerCase() === idVal && String(a.pin) === pinVal; });
+        if (!staff) {
+          err.textContent = "ID Login atau PIN tidak sesuai.";
+          err.classList.remove("hidden");
+          return;
+        }
+        currentUser = { role: staff.role, name: staff.name };
+        $("activeRoleLabel").textContent = staff.name;
+        $("loginId").value = ""; $("loginPin").value = "";
+        if (staff.role === "kos") showView("viewKosMenu");
+        else { renderStaffUnits(); showView("viewStaffUnits"); }
       }
 
-      document.getElementById("btnCloseUnitModal").addEventListener("click", function () {
-        document.getElementById("unitModalBackdrop").classList.remove("open");
+      $("btnLoginSubmit").addEventListener("click", processLogin);
+      $("loginForm").addEventListener("submit", function (e) { e.preventDefault(); processLogin(); });
+      $("btnSwitchAccount").addEventListener("click", function () { currentUser = null; posCart = []; showView("viewLogin"); });
+      $("openKosUnitsBtn").addEventListener("click", function () { renderStaffUnits(); showView("viewStaffUnits"); });
+      $("openKiosPosBtn").addEventListener("click", function () { renderPosView(); showView("viewKiosPos"); });
+      $("btnBackToKosMenu").addEventListener("click", function () { showView("viewKosMenu"); });
+      $("btnBackFromPos").addEventListener("click", function () { showView("viewKosMenu"); });
+
+      document.querySelectorAll("[data-close-modal]").forEach(function (btn) {
+        btn.addEventListener("click", function () { $(btn.getAttribute("data-close-modal")).classList.remove("open"); });
       });
 
+      var taps = 0, tapT = null, holdT = null, brand = $("secretBrandTrigger");
+      function openOwnerPin() {
+        $("ownerPinErr").classList.add("hidden");
+        $("secretOwnerPinInput").value = "";
+        $("ownerPinBackdrop").classList.add("open");
+      }
+      brand.addEventListener("click", function () {
+        clearTimeout(tapT);
+        if (++taps >= 5) { taps = 0; openOwnerPin(); }
+        else tapT = setTimeout(function () { taps = 0; }, 1500);
+      });
+      ["touchstart", "mousedown"].forEach(function (ev) { brand.addEventListener(ev, function () { holdT = setTimeout(openOwnerPin, 1500); }, { passive: true }); });
+      ["touchend", "touchcancel", "mouseup", "mouseleave"].forEach(function (ev) { brand.addEventListener(ev, function () { clearTimeout(holdT); }); });
+
+      function verifyOwnerPin() {
+        if ($("secretOwnerPinInput").value.trim() === String(state.ownerPin)) {
+          $("ownerPinBackdrop").classList.remove("open");
+          enterOwnerMode();
+        } else $("ownerPinErr").classList.remove("hidden");
+      }
+      $("btnVerifyOwnerPin").addEventListener("click", verifyOwnerPin);
+      $("ownerPinForm").addEventListener("submit", function (e) { e.preventDefault(); verifyOwnerPin(); });
+
+      function renderStaffUnits() {
+        $("btnBackToKosMenu").classList.toggle("hidden", !(currentUser && currentUser.role === "kos"));
+        var list = state.units.filter(function (u) { return currentUser.role === "kos" ? u.type === "Kamar Kos" : u.type !== "Kamar Kos"; });
+        var due = list.filter(function (u) { return getUnitStatus(u).color === "red"; });
+
+        $("dueCountBadge").textContent = due.length + " Unit";
+        $("dueListContainer").innerHTML = due.length === 0
+          ? '<div class="alert-box alert-green" style="margin:6px 0 0;">Semua unit terisi masih aman di atas H-7 jatuh tempo.</div>'
+          : due.map(function (u) {
+              var st = getUnitStatus(u);
+              return '<div class="due-item"><div><strong>' + u.name + ' — ' + u.tenant.name + '</strong><div style="font-size:11px;color:var(--muted);">' + u.address + '</div><div style="font-size:11px;font-weight:700;color:#dc2626;">Jatuh Tempo: ' + fmtDate(u.tenant.checkOut) + ' (' + st.label + ')</div></div><button type="button" class="btn btn-red btn-sm" data-unit="' + u.id + '">Tindak Lanjuti</button></div>';
+            }).join("");
+
+        var groups = {};
+        list.forEach(function (u) { var k = (u.address || "Alamat Belum Diatur").trim(); (groups[k] = groups[k] || []).push(u); });
+        var keys = Object.keys(groups);
+        $("addressGroupedUnitsContainer").innerHTML = !keys.length
+          ? '<div class="card">Belum ada unit properti terdaftar.</div>'
+          : keys.map(function (addr) {
+              return '<section class="address-group"><div class="address-header"><div><div style="font-size:11px;font-weight:700;color:var(--primary);">LOKASI PROPERTI</div><div style="font-size:14px;font-weight:800;">📍 ' + addr + '</div></div><span class="pill pill-teal">' + groups[addr].length + ' Unit</span></div><div class="unit-grid">' +
+                groups[addr].map(function (u) {
+                  var st = getUnitStatus(u);
+                  var sub = u.tenant ? ('<strong>' + u.tenant.name + '</strong><div style="font-size:11px;">Tempo: ' + fmtDate(u.tenant.checkOut) + '</div>') : ('<strong>Siap Disewa</strong><div style="font-size:11px;">' + fmtRp(u.monthlyRate) + '/bln</div>');
+                  return '<div class="unit-box unit-' + st.color + '" data-unit="' + u.id + '"><div><span class="unit-badge">' + st.label + '</span><div style="font-size:15px;font-weight:800;">' + u.name + '</div><div style="font-size:11px;opacity:.8;">' + u.type + '</div></div><div style="margin-top:8px;padding-top:6px;border-top:1px solid rgba(0,0,0,.08);font-size:12px;">' + sub + '</div></div>';
+                }).join("") + '</div></section>';
+            }).join("");
+      }
+    $("viewStaffUnits").addEventListener("click", function (e) {
+        var el = e.target.closest("[data-unit]");
+        if (el) openUnitModal(el.getAttribute("data-unit"));
+      });
+
+      function pkgButtonsHtml(isKos) {
+        return '<div class="pkg-tabs">' +
+          '<button type="button" class="pkg-btn" data-pkg="harian" ' + (!isKos ? 'disabled' : '') + '>Harian<br><small>' + (isKos ? 'Manual Kalender' : 'Khusus Kos') + '</small></button>' +
+          '<button type="button" class="pkg-btn active" data-pkg="bulanan">Bulanan<br><small>Otomatis +1 Bln</small></button>' +
+          '<button type="button" class="pkg-btn" data-pkg="tahunan">Tahunan<br><small>Otomatis +1 Thn</small></button></div>';
+      }
+
+      function computeRate(unit, pkg, ci, co) {
+        if (pkg === "harian") {
+          var d = (ci && co) ? Math.max(1, diffDays(ci, co)) : 0;
+          return { rent: d * unit.dailyRate, dep: 0 };
+        }
+        return { rent: pkg === "tahunan" ? unit.yearlyRate : unit.monthlyRate, dep: unit.depositAmount };
+      }
+
       function openUnitModal(unitId) {
-        var unit = state.units.find(function (u) { return u.id === unitId; });
-        if (!unit) return;
+        var u = state.units.find(function (x) { return x.id === unitId; });
+        if (!u) return;
+        var st = getUnitStatus(u);
+        $("unitModalBox").className = "modal-box theme-" + st.color;
+        $("modalStatusTag").textContent = st.label;
+        $("modalUnitTitle").textContent = u.name + " (" + u.type + ")";
+        $("modalUnitAddress").textContent = "📍 " + u.address;
+        var body = $("unitModalBody"), isKos = u.type === "Kamar Kos";
 
-        var st = getUnitVisualStatus(unit);
-        var modalBox = document.getElementById("unitModalBox");
-        modalBox.className = "modal-box modal-theme-" + st.color;
+        if (!u.tenant) {
+          var t = todayStr(), pkg = "bulanan";
+          body.innerHTML =
+            '<form id="newRentalForm" onsubmit="return false;">' +
+              '<div class="form-group"><label>Nama Lengkap Penyewa *</label><input type="text" id="regName" placeholder="Nama sesuai KTP" /></div>' +
+              '<div class="row-2"><div class="form-group"><label>No. WhatsApp / HP *</label><input type="tel" id="regPhone" placeholder="08..." /></div><div class="form-group"><label>NIK KTP *</label><input type="text" id="regKtp" placeholder="16 digit NIK" /></div></div>' +
+              '<label>Pilih Paket Sewa *</label>' + pkgButtonsHtml(isKos) +
+              '<div class="row-2"><div class="form-group"><label>Check-In *</label><input type="date" id="regCi" value="' + t + '" /></div><div class="form-group"><label>Check-Out *</label><input type="date" id="regCo" value="' + shiftDate(t, 0, 1) + '" /></div></div>' +
+              '<div id="regNotice" class="alert-box alert-green">Paket Bulanan/Tahunan: Mencetak <strong>Surat Perjanjian Sewa</strong> & <strong>Bill</strong>.</div>' +
+              '<div class="row-2"><div class="form-group"><label>Tarif Sewa</label><input type="text" id="regRent" readonly /></div><div class="form-group"><label>Deposito</label><input type="text" id="regDep" readonly /></div></div>' +
+              '<div class="form-group"><label>Total Pembayaran Awal</label><input type="text" id="regTot" readonly style="font-size:16px;color:#065f46;" /></div>' +
+              '<button type="button" id="btnSaveRental" class="btn btn-green btn-block" style="padding:12px;">Simpan Sewa & Cetak Dokumen</button>' +
+            '</form>';
 
-        document.getElementById("modalStatusTag").textContent = st.label;
-        document.getElementById("modalUnitTitle").textContent = unit.name + " (" + unit.type + ")";
-        document.getElementById("modalUnitAddress").textContent = "📍 " + unit.address;
-
-        var body = document.getElementById("unitModalBody");
-
-        if (!unit.tenant) {
-          renderVacantRegistrationForm(unit, body);
-        } else {
-          renderOccupiedActionModal(unit, st, body);
-        }
-
-        document.getElementById("unitModalBackdrop").classList.add("open");
-      }
-
-      function renderVacantRegistrationForm(unit, container) {
-        var isKos = unit.type === "Kamar Kos";
-        var defaultPkg = "bulanan";
-        var today = todayStr();
-
-        container.innerHTML =
-          '<form id="newRentalForm">' +
-            '<div class="form-group">' +
-              '<label>Nama Lengkap Penyewa *</label>' +
-              '<input type="text" id="regTenantName" placeholder="Nama sesuai KTP" required />' +
-            '</div>' +
-            '<div class="row-2">' +
-              '<div class="form-group">' +
-                '<label>No. WhatsApp / HP *</label>' +
-                '<input type="tel" id="regTenantPhone" placeholder="08..." required />' +
-              '</div>' +
-              '<div class="form-group">' +
-                '<label>NIK KTP *</label>' +
-                '<input type="text" id="regTenantKtp" placeholder="16 digit NIK" required />' +
-              '</div>' +
-            '</div>' +
-
-            '<label>Pilih Paket Sewa *</label>' +
-            '<div class="pkg-tabs">' +
-              '<button type="button" class="pkg-btn" data-pkg="harian" ' + (!isKos ? 'disabled title="Harian khusus Kamar Kos"' : '') + '>Harian<br><small>' + (isKos ? 'Manual Kalender' : 'Khusus Kos') + '</small></button>' +
-              '<button type="button" class="pkg-btn active" data-pkg="bulanan">Bulanan<br><small>Otomatis +1 Bln</small></button>' +
-              '<button type="button" class="pkg-btn" data-pkg="tahunan">Tahunan<br><small>Otomatis +1 Thn</small></button>' +
-            '</div>' +
-
-            '<div class="row-2">' +
-              '<div class="form-group">' +
-                '<label for="regCheckIn">Tanggal Check-In *</label>' +
-                '<input type="date" id="regCheckIn" value="' + today + '" required />' +
-              '</div>' +
-              '<div class="form-group">' +
-                '<label for="regCheckOut">Tanggal Check-Out *</label>' +
-                '<input type="date" id="regCheckOut" value="' + addMonthsStr(today, 1) + '" required />' +
-              '</div>' +
-            '</div>' +
-
-            '<div id="regDocNotice" class="alert-box alert-green">Paket Bulanan/Tahunan: Mencetak <strong>Surat Perjanjian Sewa</strong> & <strong>Bill Pembayaran</strong>.</div>' +
-
-            '<div class="row-2">' +
-              '<div class="form-group">' +
-                '<label>Tarif Sewa (Kunci Owner)</label>' +
-                '<input type="text" id="regRentDisplay" readonly />' +
-              '</div>' +
-              '<div class="form-group">' +
-                '<label>Deposito (Kunci Owner)</label>' +
-                '<input type="text" id="regDepositDisplay" readonly />' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="form-group">' +
-              '<label>Total Pembayaran Awal (Sewa + Deposito)</label>' +
-              '<input type="text" id="regGrandTotalDisplay" readonly style="font-size:16px; color:#065f46;" />' +
-            '</div>' +
-
-            '<button type="submit" class="btn btn-green btn-block" style="padding:12px;">Simpan Sewa & Cetak Dokumen</button>' +
-          '</form>';
-
-        var selectedPkg = defaultPkg;
-        var calculatedRent = unit.monthlyRate;
-        var calculatedDeposit = unit.depositAmount;
-
-        function recalculateNewRental(resetCheckoutDate) {
-          var ci = document.getElementById("regCheckIn").value;
-          var coInput = document.getElementById("regCheckOut");
-          var docNotice = document.getElementById("regDocNotice");
-
-          if (selectedPkg === "harian") {
-            if (resetCheckoutDate) {
-              coInput.value = "";
-            }
-            calculatedDeposit = 0;
-            docNotice.className = "alert-box alert-yellow";
-            docNotice.innerHTML = "Paket Harian: <strong>Tidak perlu Surat Perjanjian</strong>, cukup cetak <strong>Bill</strong> saja. Pilih tanggal Check-Out manual di kalender.";
-
-            if (ci && coInput.value) {
-              var days = diffDaysBetween(ci, coInput.value);
-              if (days < 1) days = 1;
-              calculatedRent = days * unit.dailyRate;
+          function updateReg(resetCo) {
+            var ci = $("regCi").value, coEl = $("regCo"), notice = $("regNotice");
+            if (pkg === "harian") {
+              if (resetCo) coEl.value = "";
+              notice.className = "alert-box alert-yellow";
+              notice.innerHTML = "Paket Harian: <strong>Tanpa Surat Perjanjian</strong>, cukup cetak <strong>Bill</strong> saja.";
             } else {
-              calculatedRent = 0;
+              if (ci) coEl.value = pkg === "bulanan" ? shiftDate(ci, 0, 1) : shiftDate(ci, 0, 0, 1);
+              notice.className = "alert-box alert-green";
+              notice.innerHTML = "Paket " + pkg.toUpperCase() + ": Check-Out otomatis. Mencetak <strong>Surat Perjanjian Sewa</strong> & <strong>Bill</strong>.";
             }
-          } else if (selectedPkg === "bulanan") {
-            if (ci) coInput.value = addMonthsStr(ci, 1);
-            calculatedRent = unit.monthlyRate;
-            calculatedDeposit = unit.depositAmount;
-            docNotice.className = "alert-box alert-green";
-            docNotice.innerHTML = "Paket Bulanan: Tanggal Check-Out otomatis +1 bulan. Mencetak <strong>Surat Perjanjian Sewa</strong> & <strong>Bill</strong>.";
-          } else if (selectedPkg === "tahunan") {
-            if (ci) coInput.value = addYearsStr(ci, 1);
-            calculatedRent = unit.yearlyRate;
-            calculatedDeposit = unit.depositAmount;
-            docNotice.className = "alert-box alert-green";
-            docNotice.innerHTML = "Paket Tahunan: Tanggal Check-Out otomatis +1 tahun. Mencetak <strong>Surat Perjanjian Sewa</strong> & <strong>Bill</strong>.";
+            var calc = computeRate(u, pkg, ci, coEl.value);
+            $("regRent").value = fmtRp(calc.rent);
+            $("regDep").value = fmtRp(calc.dep);
+            $("regTot").value = fmtRp(calc.rent + calc.dep);
           }
+          updateReg(false);
 
-          document.getElementById("regRentDisplay").value = formatRp(calculatedRent);
-          document.getElementById("regDepositDisplay").value = formatRp(calculatedDeposit);
-          document.getElementById("regGrandTotalDisplay").value = formatRp(calculatedRent + calculatedDeposit);
-        }
-
-        recalculateNewRental(false);
-
-        container.querySelectorAll(".pkg-btn").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            if (btn.disabled) return;
-            container.querySelectorAll(".pkg-btn").forEach(function (b) { b.classList.remove("active"); });
-            btn.classList.add("active");
-            selectedPkg = btn.getAttribute("data-pkg");
-            recalculateNewRental(true);
-          });
-        });
-
-        document.getElementById("regCheckIn").addEventListener("change", function () {
-          recalculateNewRental(selectedPkg === "harian");
-        });
-
-        document.getElementById("regCheckOut").addEventListener("change", function () {
-          if (selectedPkg === "harian") {
-            recalculateNewRental(false);
-          }
-        });
-
-        document.getElementById("newRentalForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-          var ci = document.getElementById("regCheckIn").value;
-          var co = document.getElementById("regCheckOut").value;
-          if (!ci || !co || diffDaysBetween(ci, co) < 1) {
-            alert("Pastikan tanggal Check-Out minimal 1 hari setelah Check-In.");
-            return;
-          }
-
-          var tName = document.getElementById("regTenantName").value.trim();
-          var tPhone = document.getElementById("regTenantPhone").value.trim();
-          var tKtp = document.getElementById("regTenantKtp").value.trim();
-
-          unit.tenant = {
-            name: tName,
-            phone: tPhone,
-            ktp: tKtp,
-            packageType: selectedPkg,
-            checkIn: ci,
-            checkOut: co,
-            rentPaid: calculatedRent,
-            depositPaid: calculatedDeposit,
-            folioCharges: [
-              { desc: "Sewa " + selectedPkg.toUpperCase() + " (" + formatDisplayDate(ci) + " s/d " + formatDisplayDate(co) + ")", amount: calculatedRent, date: todayStr() }
-            ]
-          };
-
-          state.transactions.unshift({
-            id: "TRX-" + Date.now(),
-            date: todayStr(),
-            category: "Sewa Properti",
-            unitName: unit.name,
-            desc: "Sewa Baru (" + selectedPkg + ") - " + tName,
-            amount: calculatedRent + calculatedDeposit
-          });
-
-          saveState();
-          sendTelegramAlert(
-            "✅ SEWA BARU\nUnit: " + unit.name +
-            "\nAlamat: " + unit.address +
-            "\nPenyewa: " + tName +
-            "\nPaket: " + selectedPkg.toUpperCase() +
-            "\nCheck-Out: " + formatDisplayDate(co) +
-            "\nTotal: " + formatRp(calculatedRent + calculatedDeposit)
-          );
-
-          document.getElementById("unitModalBackdrop").classList.remove("open");
-          renderStaffOperations();
-
-          if (selectedPkg === "harian") {
-            printDocument("bill_harian", unit, unit.tenant);
-          } else {
-            printDocument("perjanjian_dan_bill", unit, unit.tenant);
-          }
-        });
-    }
-    function renderOccupiedActionModal(unit, st, container) {
-        var t = unit.tenant;
-        var alertBanner = st.color === "red"
-          ? '<div class="alert-box alert-red">⚠️ Perhatian: Masa sewa unit ini ' + st.label + ' (' + formatDisplayDate(t.checkOut) + '). Segera lakukan perpanjangan atau proses check-out.</div>'
-          : '<div class="alert-box alert-yellow">Unit sedang ditempati oleh <strong>' + t.name + '</strong> hingga <strong>' + formatDisplayDate(t.checkOut) + '</strong>.</div>';
-
-        container.innerHTML =
-          alertBanner +
-          '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:14px; font-size:13px;">' +
-            '<div><strong>Penyewa:</strong> ' + t.name + ' (' + t.phone + ')</div>' +
-            '<div><strong>Paket Aktif:</strong> ' + t.packageType.toUpperCase() + '</div>' +
-            '<div><strong>Check-In:</strong> ' + formatDisplayDate(t.checkIn) + '</div>' +
-            '<div><strong>Jatuh Tempo:</strong> ' + formatDisplayDate(t.checkOut) + '</div>' +
-            '<div><strong>Deposito Terkunci:</strong> ' + formatRp(t.depositPaid) + '</div>' +
-          '</div>' +
-
-          '<div class="row-2" style="margin-bottom:12px;">' +
-            '<button type="button" class="btn btn-primary" id="btnShowRenewSection">🔄 Perpanjang Sewa</button>' +
-            '<button type="button" class="btn btn-red" id="btnShowCheckoutSection">🚪 Proses Check-Out</button>' +
-          '</div>' +
-
-          '<div style="margin-bottom:12px;">' +
-            (t.packageType === "harian"
-              ? '<button type="button" class="btn btn-outline btn-block btn-sm" id="btnReprintDoc">🖨️ Cetak Ulang Bill Harian</button>'
-              : '<button type="button" class="btn btn-outline btn-block btn-sm" id="btnReprintDoc">🖨️ Cetak Ulang Surat Perjanjian & Bill</button>') +
-          '</div>' +
-
-          '<div id="occupiedSubActionArea"></div>';
-
-        document.getElementById("btnReprintDoc").addEventListener("click", function () {
-          if (t.packageType === "harian") {
-            printDocument("bill_harian", unit, t);
-          } else {
-            printDocument("perjanjian_dan_bill", unit, t);
-          }
-        });
-
-        document.getElementById("btnShowRenewSection").addEventListener("click", function () {
-          renderRenewalSubForm(unit, document.getElementById("occupiedSubActionArea"));
-        });
-
-        document.getElementById("btnShowCheckoutSection").addEventListener("click", function () {
-          renderCheckoutSubForm(unit, document.getElementById("occupiedSubActionArea"));
-        });
-      }
-
-      function renderRenewalSubForm(unit, area) {
-        var isKos = unit.type === "Kamar Kos";
-        var startRenew = unit.tenant.checkOut;
-        var renewPkg = "bulanan";
-        var renewCost = unit.monthlyRate;
-
-        area.innerHTML =
-          '<form id="renewForm" style="border-top:2px dashed #cbd5e1; padding-top:12px; margin-top:8px;">' +
-            '<h4 style="margin:0 0 8px;">Perpanjang Masa Sewa — ' + unit.name + '</h4>' +
-            '<label>Pilih Paket Perpanjangan *</label>' +
-            '<div class="pkg-tabs">' +
-              '<button type="button" class="pkg-btn" data-rpkg="harian" ' + (!isKos ? 'disabled' : '') + '>Harian<br><small>' + (isKos ? 'Manual Kalender' : 'Khusus Kos') + '</small></button>' +
-              '<button type="button" class="pkg-btn active" data-rpkg="bulanan">Bulanan<br><small>Otomatis +1 Bln</small></button>' +
-              '<button type="button" class="pkg-btn" data-rpkg="tahunan">Tahunan<br><small>Otomatis +1 Thn</small></button>' +
-            '</div>' +
-            '<div class="row-2">' +
-              '<div class="form-group">' +
-                '<label>Mulai Perpanjangan</label>' +
-                '<input type="date" id="renewStart" value="' + startRenew + '" readonly />' +
-              '</div>' +
-              '<div class="form-group">' +
-                '<label>Tanggal Check-Out Baru *</label>' +
-                '<input type="date" id="renewEnd" value="' + addMonthsStr(startRenew, 1) + '" required />' +
-              '</div>' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label>Tarif Perpanjangan (Kunci Owner)</label>' +
-              '<input type="text" id="renewCostDisplay" value="' + formatRp(renewCost) + '" readonly />' +
-            '</div>' +
-            '<button type="submit" class="btn btn-green btn-block">Simpan Perpanjangan & Cetak Bukti</button>' +
-          '</form>';
-
-        function recalcRenew(clearManual) {
-          var endInput = document.getElementById("renewEnd");
-          if (renewPkg === "harian") {
-            if (clearManual) endInput.value = "";
-            if (endInput.value) {
-              var d = diffDaysBetween(startRenew, endInput.value);
-              if (d < 1) d = 1;
-              renewCost = d * unit.dailyRate;
-            } else {
-              renewCost = 0;
-            }
-          } else if (renewPkg === "bulanan") {
-            endInput.value = addMonthsStr(startRenew, 1);
-            renewCost = unit.monthlyRate;
-          } else if (renewPkg === "tahunan") {
-            endInput.value = addYearsStr(startRenew, 1);
-            renewCost = unit.yearlyRate;
-          }
-          document.getElementById("renewCostDisplay").value = formatRp(renewCost);
-        }
-
-        area.querySelectorAll("[data-rpkg]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            if (btn.disabled) return;
-            area.querySelectorAll("[data-rpkg]").forEach(function (b) { b.classList.remove("active"); });
-            btn.classList.add("active");
-            renewPkg = btn.getAttribute("data-rpkg");
-            recalcRenew(true);
-          });
-        });
-
-        document.getElementById("renewEnd").addEventListener("change", function () {
-          if (renewPkg === "harian") recalcRenew(false);
-        });
-
-        document.getElementById("renewForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-          var newEnd = document.getElementById("renewEnd").value;
-          if (!newEnd || diffDaysBetween(startRenew, newEnd) < 1) {
-            alert("Pilih tanggal Check-Out baru yang valid.");
-            return;
-          }
-
-          unit.tenant.packageType = renewPkg;
-          unit.tenant.checkOut = newEnd;
-          unit.tenant.rentPaid += renewCost;
-          unit.tenant.folioCharges.push({
-            desc: "Perpanjangan " + renewPkg.toUpperCase() + " s/d " + formatDisplayDate(newEnd),
-            amount: renewCost,
-            date: todayStr()
-          });
-
-          state.transactions.unshift({
-            id: "TRX-" + Date.now(),
-            date: todayStr(),
-            category: "Perpanjangan Sewa",
-            unitName: unit.name,
-            desc: "Perpanjangan (" + renewPkg + ") - " + unit.tenant.name,
-            amount: renewCost
-          });
-
-          saveState();
-          sendTelegramAlert(
-            "🔄 PERPANJANGAN SEWA\nUnit: " + unit.name +
-            "\nPenyewa: " + unit.tenant.name +
-            "\nPaket: " + renewPkg.toUpperCase() +
-            "\nJatuh Tempo Baru: " + formatDisplayDate(newEnd) +
-            "\nNominal: " + formatRp(renewCost)
-          );
-
-          var tenantSnapshot = JSON.parse(JSON.stringify(unit.tenant));
-          document.getElementById("unitModalBackdrop").classList.remove("open");
-          renderStaffOperations();
-
-          if (renewPkg === "harian") {
-            printDocument("bill_harian", unit, tenantSnapshot);
-          } else {
-            printDocument("perjanjian_dan_bill", unit, tenantSnapshot);
-          }
-        });
-      }
-
-      function renderCheckoutSubForm(unit, area) {
-        var t = unit.tenant;
-        area.innerHTML =
-          '<form id="checkoutForm" style="border-top:2px dashed #fca5a5; padding-top:12px; margin-top:8px;">' +
-            '<h4 style="margin:0 0 8px; color:#991b1b;">Proses Check-Out — ' + unit.name + '</h4>' +
-            '<div class="form-group">' +
-              '<label>Deposito Awal Penyewa</label>' +
-              '<input type="text" value="' + formatRp(t.depositPaid) + '" readonly />' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label for="deductionAmount">Potongan Kerusakan / Kebersihan / Listrik (Rp)</label>' +
-              '<input type="number" id="deductionAmount" value="0" min="0" max="' + t.depositPaid + '" />' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label for="deductionNote">Keterangan Potongan (jika ada)</label>' +
-              '<input type="text" id="deductionNote" placeholder="Contoh: Tidak ada potongan / Ganti kunci" />' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label style="display:flex; align-items:center; gap:8px; cursor:pointer;">' +
-                '<input type="checkbox" id="keyHandoverCheck" required style="width:auto;" />' +
-                '<span>Kunci unit telah diterima kembali & kondisi kamar dicek</span>' +
-              '</label>' +
-            '</div>' +
-            '<button type="submit" class="btn btn-red btn-block">Selesaikan Check-Out & Cetak Bill Folio</button>' +
-          '</form>';
-
-        document.getElementById("checkoutForm").addEventListener("submit", function (e) {
-          e.preventDefault();
-          var deduction = Number(document.getElementById("deductionAmount").value || 0);
-          if (deduction > t.depositPaid) deduction = t.depositPaid;
-          var refund = t.depositPaid - deduction;
-          var note = document.getElementById("deductionNote").value.trim() || "Tidak ada potongan";
-
-          var checkoutSummary = {
-            tenant: JSON.parse(JSON.stringify(t)),
-            checkoutDate: todayStr(),
-            deduction: deduction,
-            refund: refund,
-            note: note
-          };
-
-          if (deduction > 0) {
-            state.transactions.unshift({
-              id: "TRX-" + Date.now(),
-              date: todayStr(),
-              category: "Potongan Deposito",
-              unitName: unit.name,
-              desc: "Potongan Check-Out (" + note + ") - " + t.name,
-              amount: deduction
+          body.querySelectorAll("[data-pkg]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              if (b.disabled) return;
+              body.querySelectorAll("[data-pkg]").forEach(function (x) { x.classList.remove("active"); });
+              b.classList.add("active");
+              pkg = b.getAttribute("data-pkg");
+              updateReg(true);
             });
-          }
+          });
+          $("regCi").addEventListener("change", function () { updateReg(pkg === "harian"); });
+          $("regCo").addEventListener("change", function () { if (pkg === "harian") updateReg(false); });
 
-          unit.tenant = null;
-          saveState();
+          $("btnSaveRental").addEventListener("click", function () {
+            var nm = $("regName").value.trim(), ph = $("regPhone").value.trim(), ktp = $("regKtp").value.trim();
+            var ci = $("regCi").value, co = $("regCo").value;
+            if (!nm || !ph || !ktp) return alert("Lengkapi Nama, No. HP, dan NIK KTP penyewa.");
+            if (!ci || !co || diffDays(ci, co) < 1) return alert("Tanggal Check-Out minimal 1 hari setelah Check-In.");
 
-          sendTelegramAlert(
-            "🚪 CHECK-OUT UNIT\nUnit: " + unit.name +
-            "\nAlamat: " + unit.address +
-            "\nMantan Penyewa: " + checkoutSummary.tenant.name +
-            "\nDeposito Dikembalikan: " + formatRp(refund) +
-            "\nPotongan: " + formatRp(deduction) + " (" + note + ")"
-          );
-
-          document.getElementById("unitModalBackdrop").classList.remove("open");
-          renderStaffOperations();
-          printCheckoutFolio(unit, checkoutSummary);
-        });
-      }
-
-      function printDocument(mode, unit, tenant) {
-        var printArea = document.getElementById("printArea");
-        var billHtml =
-          '<div style="border:2px solid #0f172a; padding:18px; border-radius:8px; margin-bottom:24px;">' +
-            '<div style="display:flex; justify-content:space-between; border-bottom:2px solid #0f172a; padding-bottom:10px;">' +
-              '<div>' +
-                '<h2 style="margin:0;">BILL PEMBAYARAN SEWA</h2>' +
-                '<div style="font-size:12px;">' + unit.address + '</div>' +
-              '</div>' +
-              '<div style="text-align:right; font-size:12px;">' +
-                '<strong>Tanggal:</strong> ' + formatDisplayDate(todayStr()) + '<br>' +
-                '<strong>Unit:</strong> ' + unit.name + ' (' + unit.type + ')' +
-              '</div>' +
+            var calc = computeRate(u, pkg, ci, co);
+            u.tenant = {
+              name: nm, phone: ph, ktp: ktp, packageType: pkg, checkIn: ci, checkOut: co,
+              rentPaid: calc.rent, depositPaid: calc.dep,
+              folioCharges: [{ desc: "Sewa " + pkg.toUpperCase() + " (" + fmtDate(ci) + " s/d " + fmtDate(co) + ")", amount: calc.rent, date: todayStr() }]
+            };
+            state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Sewa Properti", unitName: u.name, desc: "Sewa Baru (" + pkg + ") - " + nm, amount: calc.rent + calc.dep });
+            saveState();
+            sendTelegram("✅ SEWA BARU\nUnit: " + u.name + "\nPenyewa: " + nm + "\nPaket: " + pkg.toUpperCase() + "\nCheck-Out: " + fmtDate(co) + "\nTotal: " + fmtRp(calc.rent + calc.dep));
+            $("unitModalBackdrop").classList.remove("open");
+            renderStaffUnits();
+            printRentalDoc(pkg === "harian" ? "bill" : "full", u, u.tenant);
+          });
+        } else {
+          var tn = u.tenant;
+          body.innerHTML =
+            '<div class="alert-box ' + (st.color === "red" ? "alert-red" : "alert-yellow") + '">' + (st.color === "red" ? "⚠️ Masa sewa " + st.label + " (" + fmtDate(tn.checkOut) + ")." : "Ditempati oleh <strong>" + tn.name + "</strong> s/d <strong>" + fmtDate(tn.checkOut) + "</strong>.") + '</div>' +
+            '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;">' +
+              '<div><strong>Penyewa:</strong> ' + tn.name + ' (' + tn.phone + ')</div><div><strong>Paket:</strong> ' + tn.packageType.toUpperCase() + '</div>' +
+              '<div><strong>Periode:</strong> ' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + '</div><div><strong>Deposito:</strong> ' + fmtRp(tn.depositPaid) + '</div>' +
             '</div>' +
-            '<table style="width:100%; margin-top:12px; border-collapse:collapse;">' +
-              '<tr><td style="padding:6px 0;"><strong>Nama Penyewa</strong></td><td>: ' + tenant.name + ' (' + tenant.phone + ')</td></tr>' +
-              '<tr><td style="padding:6px 0;"><strong>Paket Sewa</strong></td><td>: ' + tenant.packageType.toUpperCase() + '</td></tr>' +
-              '<tr><td style="padding:6px 0;"><strong>Periode</strong></td><td>: ' + formatDisplayDate(tenant.checkIn) + ' s/d ' + formatDisplayDate(tenant.checkOut) + '</td></tr>' +
-              '<tr><td style="padding:6px 0;"><strong>Tarif Sewa</strong></td><td>: ' + formatRp(tenant.rentPaid) + '</td></tr>' +
-              '<tr><td style="padding:6px 0;"><strong>Deposito</strong></td><td>: ' + formatRp(tenant.depositPaid) + '</td></tr>' +
-              '<tr style="border-top:2px solid #000;"><td style="padding:8px 0;"><strong>TOTAL DIBAYAR</strong></td><td><strong>: ' + formatRp(tenant.rentPaid + tenant.depositPaid) + '</strong></td></tr>' +
-            '</table>' +
-          '</div>';
+            '<div class="row-2" style="margin-bottom:10px;"><button type="button" class="btn btn-primary" id="btnShowRenew">🔄 Perpanjang Sewa</button><button type="button" class="btn btn-red" id="btnShowCo">🚪 Check-Out</button></div>' +
+            '<button type="button" class="btn btn-outline btn-block btn-sm" id="btnReprint">🖨️ Cetak Ulang ' + (tn.packageType === "harian" ? "Bill Harian" : "Perjanjian & Bill") + '</button>' +
+            '<div id="subActionArea"></div>';
 
-        var agreementHtml = "";
-        if (mode === "perjanjian_dan_bill") {
-          agreementHtml =
-            '<div style="border:2px solid #0f172a; padding:20px; border-radius:8px; page-break-before:always;">' +
-              '<h2 style="text-align:center; margin:0 0 4px;">SURAT PERJANJIAN SEWA MENYEWA</h2>' +
-              '<p style="text-align:center; font-size:12px; margin:0 0 16px;">Lokasi Properti: ' + unit.address + '</p>' +
-              '<p style="font-size:13px;">Pada hari ini, <strong>' + formatDisplayDate(todayStr()) + '</strong>, telah disepakati perjanjian sewa unit <strong>' + unit.name + ' (' + unit.type + ')</strong> dengan ketentuan:</p>' +
-              '<ol style="font-size:13px; line-height:1.6;">' +
-                '<li><strong>Identitas Penyewa:</strong> ' + tenant.name + ' (NIK: ' + tenant.ktp + ', No. HP: ' + tenant.phone + ').</li>' +
-                '<li><strong>Masa Sewa (' + tenant.packageType.toUpperCase() + '):</strong> Berlaku mulai <strong>' + formatDisplayDate(tenant.checkIn) + '</strong> sampai dengan <strong>' + formatDisplayDate(tenant.checkOut) + '</strong>.</li>' +
-                '<li><strong>Nilai Sewa & Deposito:</strong> Biaya sewa sebesar <strong>' + formatRp(tenant.rentPaid) + '</strong> dan jaminan deposito sebesar <strong>' + formatRp(tenant.depositPaid) + '</strong> yang akan dikembalikan saat check-out setelah pemeriksaan kondisi unit & serah terima kunci.</li>' +
-                '<li><strong>Tata Tertib:</strong> Penyewa wajib menjaga kebersihan, ketertiban, keamanan lingkungan, serta tidak memindahtangankan sewa tanpa izin tertulis pemilik.</li>' +
-              '</ol>' +
-              '<div style="display:flex; justify-content:space-between; margin-top:36px; font-size:13px; text-align:center;">' +
-                '<div style="width:40%;">Pengelola / Pemilik<br><br><br><br>( ____________________ )</div>' +
-                '<div style="width:40%;">Penyewa<br><br><br><br>( ' + tenant.name + ' )</div>' +
-              '</div>' +
-            '</div>';
+          $("btnReprint").addEventListener("click", function () { printRentalDoc(tn.packageType === "harian" ? "bill" : "full", u, tn); });
+
+          $("btnShowRenew").addEventListener("click", function () {
+            var rPkg = "bulanan", startR = tn.checkOut;
+            $("subActionArea").innerHTML =
+              '<div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:12px;">' +
+                '<h4 style="margin:0 0 8px;">Perpanjang Sewa</h4>' + pkgButtonsHtml(isKos) +
+                '<div class="row-2"><div class="form-group"><label>Mulai</label><input type="date" id="renStart" value="' + startR + '" readonly /></div><div class="form-group"><label>Check-Out Baru *</label><input type="date" id="renEnd" value="' + shiftDate(startR, 0, 1) + '" /></div></div>' +
+                '<div class="form-group"><label>Tarif Perpanjangan</label><input type="text" id="renCost" value="' + fmtRp(u.monthlyRate) + '" readonly /></div>' +
+                '<button type="button" id="btnSubmitRenew" class="btn btn-green btn-block">Simpan Perpanjangan & Cetak</button>' +
+              '</div>';
+          function updateRen(clear) {
+              var endEl = $("renEnd");
+              if (rPkg === "harian") { if (clear) endEl.value = ""; }
+              else endEl.value = rPkg === "bulanan" ? shiftDate(startR, 0, 1) : shiftDate(startR, 0, 0, 1);
+              $("renCost").value = fmtRp(computeRate(u, rPkg, startR, endEl.value).rent);
+            }
+            $("subActionArea").querySelectorAll("[data-pkg]").forEach(function (b) {
+              b.addEventListener("click", function () {
+                if (b.disabled) return;
+                $("subActionArea").querySelectorAll("[data-pkg]").forEach(function (x) { x.classList.remove("active"); });
+                b.classList.add("active"); rPkg = b.getAttribute("data-pkg"); updateRen(true);
+              });
+            });
+            $("renEnd").addEventListener("change", function () { if (rPkg === "harian") updateRen(false); });
+            $("btnSubmitRenew").addEventListener("click", function () {
+              var newEnd = $("renEnd").value;
+              if (!newEnd || diffDays(startR, newEnd) < 1) return alert("Pilih tanggal Check-Out baru yang valid.");
+              var cost = computeRate(u, rPkg, startR, newEnd).rent;
+              tn.packageType = rPkg; tn.checkOut = newEnd; tn.rentPaid += cost;
+              tn.folioCharges.push({ desc: "Perpanjangan " + rPkg.toUpperCase() + " s/d " + fmtDate(newEnd), amount: cost, date: todayStr() });
+              state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Perpanjangan Sewa", unitName: u.name, desc: "Perpanjangan (" + rPkg + ") - " + tn.name, amount: cost });
+              saveState();
+              sendTelegram("🔄 PERPANJANGAN SEWA\nUnit: " + u.name + "\nPenyewa: " + tn.name + "\nTempo Baru: " + fmtDate(newEnd) + "\nNominal: " + fmtRp(cost));
+              var snap = JSON.parse(JSON.stringify(tn));
+              $("unitModalBackdrop").classList.remove("open");
+              renderStaffUnits();
+              printRentalDoc(rPkg === "harian" ? "bill" : "full", u, snap);
+            });
+          });
+
+          $("btnShowCo").addEventListener("click", function () {
+            $("subActionArea").innerHTML =
+              '<div style="border-top:2px dashed #fca5a5;padding-top:12px;margin-top:12px;">' +
+                '<h4 style="margin:0 0 8px;color:#991b1b;">Proses Check-Out</h4>' +
+                '<div class="form-group"><label>Potongan Kerusakan / Kebersihan (Rp)</label><input type="number" id="coDed" value="0" min="0" max="' + tn.depositPaid + '" /></div>' +
+                '<div class="form-group"><label>Keterangan Potongan</label><input type="text" id="coNote" placeholder="Contoh: Tidak ada potongan" /></div>' +
+                '<label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><input type="checkbox" id="coKey" style="width:auto;" /><span>Kunci diterima & kondisi kamar sudah dicek</span></label>' +
+                '<button type="button" id="btnSubmitCo" class="btn btn-red btn-block">Selesaikan Check-Out & Cetak Folio</button>' +
+              '</div>';
+
+            $("btnSubmitCo").addEventListener("click", function () {
+              if (!$("coKey").checked) return alert("Centang konfirmasi penerimaan kunci terlebih dahulu.");
+              var ded = Math.min(tn.depositPaid, Math.max(0, Number($("coDed").value || 0)));
+              var ref = tn.depositPaid - ded, note = $("coNote").value.trim() || "Tidak ada potongan";
+              var snap = JSON.parse(JSON.stringify(tn));
+              if (ded > 0) state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Potongan Deposito", unitName: u.name, desc: "Potongan Check-Out (" + note + ") - " + tn.name, amount: ded });
+              u.tenant = null; saveState();
+              sendTelegram("🚪 CHECK-OUT\nUnit: " + u.name + "\nPenyewa: " + snap.name + "\nKembali Deposito: " + fmtRp(ref) + "\nPotongan: " + fmtRp(ded));
+              $("unitModalBackdrop").classList.remove("open");
+              renderStaffUnits();
+              triggerPrint('<div style="border:2px solid #000;padding:18px;"><h2>GUEST FOLIO & CHECK-OUT</h2><div>' + u.name + ' — ' + u.address + '</div><p><strong>Penyewa:</strong> ' + snap.name + ' | <strong>Check-Out:</strong> ' + fmtDate(todayStr()) + '</p>' +
+                renderTable(["Tanggal", "Rincian", "Nominal"], snap.folioCharges.map(function (c) { return [fmtDate(c.date), c.desc, fmtRp(c.amount)]; })) +
+                '<hr><div>Deposito Awal: <strong>' + fmtRp(snap.depositPaid) + '</strong></div><div>Potongan (' + note + '): <strong>- ' + fmtRp(ded) + '</strong></div><div style="font-size:15px;margin-top:6px;">Deposito Dikembalikan: <strong>' + fmtRp(ref) + '</strong></div></div>');
+            });
+          });
         }
-
-        printArea.innerHTML = billHtml + agreementHtml;
-        setTimeout(function () {
-          window.print();
-        }, 150);
+        $("unitModalBackdrop").classList.add("open");
       }
 
-      function printCheckoutFolio(unit, summary) {
-        var printArea = document.getElementById("printArea");
-        var chargesRows = (summary.tenant.folioCharges || []).map(function (c) {
-          return '<tr><td>' + formatDisplayDate(c.date) + '</td><td>' + c.desc + '</td><td style="text-align:right;">' + formatRp(c.amount) + '</td></tr>';
-        }).join("");
-
-        printArea.innerHTML =
-          '<div style="border:2px solid #0f172a; padding:20px; border-radius:8px;">' +
-            '<h2 style="margin:0;">GUEST FOLIO & BILL CHECK-OUT</h2>' +
-            '<div style="font-size:12px; margin-bottom:12px;">' + unit.name + ' — ' + unit.address + '</div>' +
-            '<div style="font-size:13px; margin-bottom:12px;">' +
-              '<strong>Nama Penyewa:</strong> ' + summary.tenant.name + '<br>' +
-              '<strong>Check-In:</strong> ' + formatDisplayDate(summary.tenant.checkIn) + ' | <strong>Check-Out:</strong> ' + formatDisplayDate(summary.checkoutDate) +
-            '</div>' +
-            '<table style="width:100%; border-collapse:collapse; margin-bottom:14px;">' +
-              '<thead><tr style="border-bottom:1px solid #000;"><th>Tanggal</th><th>Rincian Transaksi</th><th style="text-align:right;">Nominal</th></tr></thead>' +
-              '<tbody>' + chargesRows + '</tbody>' +
-            '</table>' +
-            '<div style="border-top:2px solid #000; padding-top:10px; font-size:13px;">' +
-              '<div>Deposito Awal: <strong>' + formatRp(summary.tenant.depositPaid) + '</strong></div>' +
-              '<div>Potongan (' + summary.note + '): <strong>- ' + formatRp(summary.deduction) + '</strong></div>' +
-              '<div style="font-size:15px; margin-top:6px;">Deposito Dikembalikan ke Penyewa: <strong>' + formatRp(summary.refund) + '</strong></div>' +
-            '</div>' +
-          '</div>';
-
-        setTimeout(function () {
-          window.print();
-        }, 150);
+      function printRentalDoc(mode, u, tn) {
+        var bill = '<div style="border:2px solid #000;padding:18px;margin-bottom:20px;"><h2>BILL PEMBAYARAN SEWA</h2><div>' + u.address + '</div><hr>' +
+          '<p><strong>Tanggal:</strong> ' + fmtDate(todayStr()) + ' | <strong>Unit:</strong> ' + u.name + ' (' + u.type + ')<br>' +
+          '<strong>Penyewa:</strong> ' + tn.name + ' (' + tn.phone + ')<br><strong>Paket:</strong> ' + tn.packageType.toUpperCase() + ' (' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + ')<br>' +
+          '<strong>Sewa:</strong> ' + fmtRp(tn.rentPaid) + ' | <strong>Deposito:</strong> ' + fmtRp(tn.depositPaid) + '<br><strong>TOTAL DIBAYAR: ' + fmtRp(tn.rentPaid + tn.depositPaid) + '</strong></p></div>';
+        var agr = mode === "full" ? ('<div style="border:2px solid #000;padding:18px;page-break-before:always;"><h2 style="text-align:center;">SURAT PERJANJIAN SEWA MENYEWA</h2><p style="text-align:center;">' + u.address + '</p>' +
+          '<ol style="line-height:1.6;"><li><strong>Penyewa:</strong> ' + tn.name + ' (NIK: ' + tn.ktp + ', HP: ' + tn.phone + ') menyewa unit <strong>' + u.name + '</strong>.</li>' +
+          '<li><strong>Masa Sewa:</strong> ' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + ' (' + tn.packageType.toUpperCase() + ').</li>' +
+          '<li><strong>Biaya:</strong> Sewa ' + fmtRp(tn.rentPaid) + ' & Deposito ' + fmtRp(tn.depositPaid) + ' (dikembalikan saat check-out setelah cek kondisi unit).</li>' +
+          '<li><strong>Tata Tertib:</strong> Wajib menjaga kebersihan, ketertiban, dan tidak mengalihkan sewa tanpa izin pemilik.</li></ol>' +
+          '<div style="display:flex;justify-content:space-between;margin-top:36px;text-align:center;"><div style="width:40%;">Pengelola<br><br><br>( ____________ )</div><div style="width:40%;">Penyewa<br><br><br>( ' + tn.name + ' )</div></div></div>') : "";
+        triggerPrint(bill + agr);
       }
 
       function renderPosView() {
-        var sel = document.getElementById("quickProductSelect");
-        sel.innerHTML = state.kiosProducts.map(function (p) {
-          return '<option value="' + p.barcode + '">' + p.name + ' (' + formatRp(p.price) + ' · Stok: ' + p.stock + ')</option>';
+        $("quickProductSelect").innerHTML = state.kiosProducts.map(function (p) {
+          return '<option value="' + p.barcode + '">' + p.name + ' (' + fmtRp(p.price) + ' · Stok: ' + p.stock + ')</option>';
         }).join("");
         renderPosCart();
-    }
-    function addProductToCart(barcode) {
-        var prod = state.kiosProducts.find(function (p) { return p.barcode === barcode; });
-        if (!prod) {
-          alert("Barcode tidak ditemukan di database Kios Kos.");
-          return;
-        }
-        if (prod.stock <= 0) {
-          alert("Stok " + prod.name + " habis.");
-          return;
-        }
-        var existing = posCart.find(function (c) { return c.barcode === barcode; });
-        if (existing) {
-          if (existing.qty + 1 > prod.stock) {
-            alert("Stok maksimal tersedia: " + prod.stock);
-            return;
-          }
-          existing.qty += 1;
-        } else {
-          posCart.push({ barcode: prod.barcode, name: prod.name, price: prod.price, qty: 1 });
-        }
+      }
+
+      function addToCart(code) {
+        var p = state.kiosProducts.find(function (x) { return x.barcode === code; });
+        if (!p) return alert("Barcode tidak ditemukan.");
+        if (p.stock <= 0) return alert("Stok " + p.name + " habis.");
+        var item = posCart.find(function (c) { return c.barcode === code; });
+        if (item) {
+          if (item.qty + 1 > p.stock) return alert("Stok maksimal: " + p.stock);
+          item.qty++;
+        } else posCart.push({ barcode: p.barcode, name: p.name, price: p.price, qty: 1 });
         renderPosCart();
       }
 
       function renderPosCart() {
-        var tbody = document.getElementById("posCartBody");
-        var total = 0;
-        if (posCart.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">Keranjang masih kosong.</td></tr>';
-        } else {
-          tbody.innerHTML = posCart.map(function (item, idx) {
-            var sub = item.price * item.qty;
-            total += sub;
-            return (
-              '<tr>' +
-                '<td><strong>' + item.name + '</strong><br><small style="color:#64748b;">' + item.barcode + '</small></td>' +
-                '<td>' + formatRp(item.price) + '</td>' +
-                '<td>' + item.qty + '</td>' +
-                '<td><strong>' + formatRp(sub) + '</strong></td>' +
-                '<td><button type="button" class="btn btn-red btn-sm" data-del-cart="' + idx + '">×</button></td>' +
-              '</tr>'
-            );
-          }).join("");
-        }
-        document.getElementById("posTotalDisplay").textContent = formatRp(total);
-
-        document.querySelectorAll("[data-del-cart]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var idx = Number(btn.getAttribute("data-del-cart"));
-            posCart.splice(idx, 1);
-            renderPosCart();
-          });
+        var tot = 0;
+        var rows = posCart.map(function (it, idx) {
+          var sub = it.price * it.qty; tot += sub;
+          return ['<strong>' + it.name + '</strong><br><small>' + it.barcode + '</small>', fmtRp(it.price), it.qty, '<strong>' + fmtRp(sub) + '</strong>', '<button type="button" class="btn btn-red btn-sm" data-del-cart="' + idx + '">×</button>'];
         });
+        $("posCartWrap").innerHTML = renderTable(["Barang", "Harga", "Qty", "Subtotal", ""], rows, "Keranjang masih kosong.");
+        $("posTotalDisplay").textContent = fmtRp(tot);
       }
 
-      document.getElementById("barcodeScanInput").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          var code = this.value.trim();
-          if (code) {
-            addProductToCart(code);
-            this.value = "";
-          }
-        }
+      $("posCartWrap").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-del-cart]");
+        if (b) { posCart.splice(Number(b.getAttribute("data-del-cart")), 1); renderPosCart(); }
       });
-
-      document.getElementById("btnAddScanItem").addEventListener("click", function () {
-        var manualScan = document.getElementById("barcodeScanInput").value.trim();
-        var selectedCode = document.getElementById("quickProductSelect").value;
-        addProductToCart(manualScan || selectedCode);
-        document.getElementById("barcodeScanInput").value = "";
+      $("barcodeScanInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); if (this.value.trim()) { addToCart(this.value.trim()); this.value = ""; } }
       });
-
-      document.getElementById("btnClearCart").addEventListener("click", function () {
-        posCart = [];
-        renderPosCart();
+      $("btnAddScanItem").addEventListener("click", function () {
+        var code = $("barcodeScanInput").value.trim() || $("quickProductSelect").value;
+        $("barcodeScanInput").value = "";
+        addToCart(code);
       });
-
-      document.getElementById("btnCheckoutPos").addEventListener("click", function () {
-        if (posCart.length === 0) {
-          alert("Keranjang belanja masih kosong.");
-          return;
-        }
-        var grandTotal = 0;
-        var itemCount = 0;
+      $("btnClearCart").addEventListener("click", function () { posCart = []; renderPosCart(); });
+      $("btnCheckoutPos").addEventListener("click", function () {
+        if (!posCart.length) return alert("Keranjang masih kosong.");
+        var tot = 0, qtyAll = 0;
         posCart.forEach(function (c) {
-          grandTotal += c.price * c.qty;
-          itemCount += c.qty;
-          var prod = state.kiosProducts.find(function (p) { return p.barcode === c.barcode; });
-          if (prod) prod.stock = Math.max(0, prod.stock - c.qty);
+          tot += c.price * c.qty; qtyAll += c.qty;
+          var p = state.kiosProducts.find(function (x) { return x.barcode === c.barcode; });
+          if (p) p.stock = Math.max(0, p.stock - c.qty);
         });
-
-        state.transactions.unshift({
-          id: "TRX-" + Date.now(),
-          date: todayStr(),
-          category: "Kios Kos",
-          unitName: "Kios Kos",
-          desc: "Penjualan Kios (" + itemCount + " item)",
-          amount: grandTotal
-        });
-
-        var receiptItems = JSON.parse(JSON.stringify(posCart));
-        posCart = [];
-        saveState();
-        renderPosView();
-
-        var printArea = document.getElementById("printArea");
-        printArea.innerHTML =
-          '<div style="max-width:320px; border:1px dashed #000; padding:14px; font-family:monospace;">' +
-            '<h3 style="margin:0 0 4px; text-align:center;">STRUK KIOS KOS</h3>' +
-            '<div style="text-align:center; font-size:11px; margin-bottom:10px;">' + formatDisplayDate(todayStr()) + '</div>' +
-            receiptItems.map(function (it) {
-              return '<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;"><span>' + it.name + ' x' + it.qty + '</span><span>' + formatRp(it.price * it.qty) + '</span></div>';
-            }).join("") +
-            '<div style="border-top:1px dashed #000; margin-top:8px; padding-top:8px; display:flex; justify-content:space-between; font-weight:bold;"><span>TOTAL</span><span>' + formatRp(grandTotal) + '</span></div>' +
-          '</div>';
-        setTimeout(function () { window.print(); }, 150);
+        state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Kios Kos", unitName: "Kios Kos", desc: "Penjualan Kios (" + qtyAll + " item)", amount: tot });
+        var snap = JSON.parse(JSON.stringify(posCart));
+        posCart = []; saveState(); renderPosView();
+        triggerPrint('<div style="max-width:300px;border:1px dashed #000;padding:12px;font-family:monospace;"><h3 style="margin:0;text-align:center;">STRUK KIOS KOS</h3><div style="text-align:center;font-size:11px;margin-bottom:8px;">' + fmtDate(todayStr()) + '</div>' +
+          snap.map(function (i) { return '<div style="display:flex;justify-content:space-between;font-size:12px;"><span>' + i.name + ' x' + i.qty + '</span><span>' + fmtRp(i.price * i.qty) + '</span></div>'; }).join("") +
+          '<hr><div style="display:flex;justify-content:space-between;font-weight:bold;"><span>TOTAL</span><span>' + fmtRp(tot) + '</span></div></div>');
       });
 
-      document.getElementById("ownerTabBar").addEventListener("click", function (e) {
-        var btn = e.target.closest("[data-tab]");
-        if (!btn) return;
-        activeOwnerTab = btn.getAttribute("data-tab");
-        document.querySelectorAll(".owner-tab").forEach(function (t) { t.classList.remove("active"); });
-        btn.classList.add("active");
-        renderOwnerDashboard();
+      var OWNER_TABS = [
+        ["ringkasan", "1. Ringkasan"], ["unit", "2. Unit & Alamat"], ["tarif", "3. Kunci Tarif"], ["kios", "4. Stok Kios"],
+        ["keuangan", "5. Keuangan"], ["pengeluaran", "6. Pengeluaran"], ["petugas", "7. Akun Petugas"], ["telegram", "8. Telegram & PIN"]
+      ];
+
+      $("ownerTabBar").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-tab]");
+        if (b) { activeOwnerTab = b.getAttribute("data-tab"); renderOwnerDashboard(); }
       });
 
       function renderOwnerDashboard() {
-        var box = document.getElementById("ownerTabContent");
+        $("ownerTabBar").innerHTML = OWNER_TABS.map(function (t) {
+          return '<button type="button" class="owner-tab ' + (activeOwnerTab === t[0] ? "active" : "") + '" data-tab="' + t[0] + '">' + t[1] + '</button>';
+        }).join("");
 
+        var box = $("ownerTabContent");
         if (activeOwnerTab === "ringkasan") {
-          var totalUnits = state.units.length;
-          var occupied = state.units.filter(function (u) { return !!u.tenant; }).length;
-          var dueCount = state.units.filter(function (u) { return getUnitVisualStatus(u).color === "red"; }).length;
-          var totalIncome = state.transactions.reduce(function (s, t) { return s + Number(t.amount || 0); }, 0);
-          var totalExp = state.expenses.reduce(function (s, e) { return s + Number(e.amount || 0); }, 0);
-
+          var occ = state.units.filter(function (u) { return !!u.tenant; }).length;
+          var due = state.units.filter(function (u) { return getUnitStatus(u).color === "red"; }).length;
+          var inc = state.transactions.reduce(function (s, t) { return s + Number(t.amount || 0); }, 0);
+          var exp = state.expenses.reduce(function (s, e) { return s + Number(e.amount || 0); }, 0);
           box.innerHTML =
             '<div class="stat-grid">' +
-              '<div class="stat-box"><div style="font-size:11px; color:#64748b;">Okupansi Unit</div><div class="stat-val">' + occupied + ' / ' + totalUnits + ' Terisi</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px; color:#dc2626;">Jatuh Tempo (H-7)</div><div class="stat-val" style="color:#dc2626;">' + dueCount + ' Unit</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px; color:#059669;">Total Pemasukan</div><div class="stat-val" style="color:#059669;">' + formatRp(totalIncome) + '</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px; color:#0f172a;">Saldo Bersih</div><div class="stat-val">' + formatRp(totalIncome - totalExp) + '</div></div>' +
+              '<div class="stat-box"><div style="font-size:11px;color:var(--muted);">Okupansi</div><div class="stat-val">' + occ + ' / ' + state.units.length + ' Terisi</div></div>' +
+              '<div class="stat-box"><div style="font-size:11px;color:#dc2626;">Jatuh Tempo (H-7)</div><div class="stat-val" style="color:#dc2626;">' + due + ' Unit</div></div>' +
+              '<div class="stat-box"><div style="font-size:11px;color:#059669;">Total Pemasukan</div><div class="stat-val" style="color:#059669;">' + fmtRp(inc) + '</div></div>' +
+              '<div class="stat-box"><div style="font-size:11px;">Saldo Bersih</div><div class="stat-val">' + fmtRp(inc - exp) + '</div></div>' +
             '</div>' +
-            '<div class="card">' +
-              '<h4 style="margin:0 0 8px;">Status Seluruh Unit Properti</h4>' +
-              '<div class="table-wrap"><table><thead><tr><th>Unit</th><th>Alamat</th><th>Status</th><th>Penyewa</th><th>Jatuh Tempo</th></tr></thead><tbody>' +
-              state.units.map(function (u) {
-                var st = getUnitVisualStatus(u);
-                return '<tr><td><strong>' + u.name + '</strong><br><small>' + u.type + '</small></td><td>' + u.address + '</td><td><strong>' + st.label + '</strong></td><td>' + (u.tenant ? u.tenant.name : '-') + '</td><td>' + (u.tenant ? formatDisplayDate(u.tenant.checkOut) : '-') + '</td></tr>';
-              }).join("") +
-              '</tbody></table></div>' +
-            '</div>';
+            '<div class="card"><h4 style="margin:0 0 8px;">Status Seluruh Unit</h4><div class="table-wrap">' +
+            renderTable(["Unit", "Alamat", "Status", "Penyewa", "Jatuh Tempo"], state.units.map(function (u) {
+              return ['<strong>' + u.name + '</strong><br><small>' + u.type + '</small>', u.address, '<strong>' + getUnitStatus(u).label + '</strong>', u.tenant ? u.tenant.name : '-', u.tenant ? fmtDate(u.tenant.checkOut) : '-'];
+            })) + '</div></div>';
         }
-
         else if (activeOwnerTab === "unit") {
-          var groups = {};
-          state.units.forEach(function (u) {
-            var a = (u.address || "Alamat Belum Diatur").trim();
-            if (!groups[a]) groups[a] = [];
-            groups[a].push(u);
-          });
-
-          var groupedListHtml = Object.keys(groups).map(function (addr) {
-            return (
-              '<div class="address-group">' +
-                '<div style="font-weight:800; font-size:13px; color:#0f766e; margin-bottom:8px;">📍 ' + addr + ' (' + groups[addr].length + ' Unit)</div>' +
-                '<div class="table-wrap"><table><thead><tr><th>Nama Unit</th><th>Jenis</th><th>Status</th><th>Aksi</th></tr></thead><tbody>' +
-                groups[addr].map(function (u) {
-                  return '<tr><td><strong>' + u.name + '</strong></td><td>' + u.type + '</td><td>' + (u.tenant ? 'Terisi (' + u.tenant.name + ')' : 'Kosong') + '</td><td><button type="button" class="btn btn-red btn-sm" data-del-unit="' + u.id + '" ' + (u.tenant ? 'disabled title="Kosongkan unit dulu"' : '') + '>Hapus</button></td></tr>';
-                }).join("") +
-                '</tbody></table></div>' +
-              '</div>'
-            );
-          }).join("");
-
+          var grp = {};
+          state.units.forEach(function (u) { (grp[u.address] = grp[u.address] || []).push(u); });
           box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 10px;">+ Tambah Unit Properti Baru (Alamat Manual)</h4>' +
-              '<form id="addUnitForm">' +
-                '<div class="form-group"><label>Alamat Lengkap Properti *</label><input type="text" id="newUnitAddress" placeholder="Contoh: Jl. Melati No. 10, Arjawinangun, Cirebon" required /></div>' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Nama Unit Baru *</label><input type="text" id="newUnitName" placeholder="Misal: Kamar 05" required /></div>' +
-                  '<div class="form-group"><label>Jenis Properti</label><select id="newUnitType"><option value="Kamar Kos">Kamar Kos</option><option value="Rumah Tinggal">Rumah Tinggal</option><option value="Toko / Ruko">Toko / Ruko</option></select></div>' +
-                '</div>' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Tarif Harian Kos (Rp)</label><input type="number" id="newUnitDaily" value="65000" /></div>' +
-                  '<div class="form-group"><label>Tarif Bulanan (Rp) *</label><input type="number" id="newUnitMonthly" value="850000" required /></div>' +
-                '</div>' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Tarif Tahunan (Rp) *</label><input type="number" id="newUnitYearly" value="9500000" required /></div>' +
-                  '<div class="form-group"><label>Deposito (Rp) *</label><input type="number" id="newUnitDeposit" value="500000" required /></div>' +
-                '</div>' +
-                '<button type="submit" class="btn btn-green btn-block">+ Tambah Unit Properti Baru</button>' +
-              '</form>' +
+            '<div class="card"><h4 style="margin:0 0 10px;">+ Tambah Unit Properti Baru</h4>' +
+              '<div class="form-group"><label>Alamat Lengkap Properti *</label><input type="text" id="nAddr" placeholder="Jl. Melati No. 10, Cirebon" /></div>' +
+              '<div class="row-2"><div class="form-group"><label>Nama Unit *</label><input type="text" id="nName" placeholder="Kamar 05" /></div><div class="form-group"><label>Jenis</label><select id="nType"><option>Kamar Kos</option><option>Rumah Tinggal</option><option>Toko / Ruko</option></select></div></div>' +
+              '<div class="row-2"><div class="form-group"><label>Tarif Harian Kos</label><input type="number" id="nDaily" value="65000" /></div><div class="form-group"><label>Tarif Bulanan *</label><input type="number" id="nMonth" value="850000" /></div></div>' +
+              '<div class="row-2"><div class="form-group"><label>Tarif Tahunan *</label><input type="number" id="nYear" value="9500000" /></div><div class="form-group"><label>Deposito *</label><input type="number" id="nDep" value="500000" /></div></div>' +
+              '<button type="button" id="btnAddUnit" class="btn btn-green btn-block">+ Tambah Unit Baru</button>' +
             '</div>' +
-            '<h4 style="margin:14px 0 8px;">Daftar Unit Dikelompokkan Berdasarkan Alamat</h4>' +
-            groupedListHtml;
-
-          document.getElementById("addUnitForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            var addr = document.getElementById("newUnitAddress").value.trim();
-            var name = document.getElementById("newUnitName").value.trim();
-            var type = document.getElementById("newUnitType").value;
-            var daily = Number(document.getElementById("newUnitDaily").value || 0);
-            var monthly = Number(document.getElementById("newUnitMonthly").value || 0);
-            var yearly = Number(document.getElementById("newUnitYearly").value || 0);
-            var dep = Number(document.getElementById("newUnitDeposit").value || 0);
-
-            state.units.push({
-              id: "U-" + Date.now(),
-              name: name,
-              type: type,
-              address: addr,
-              dailyRate: type === "Kamar Kos" ? daily : 0,
-              monthlyRate: monthly,
-              yearlyRate: yearly,
-              depositAmount: dep,
-              tenant: null
-            });
-            saveState();
-            renderOwnerDashboard();
+            Object.keys(grp).map(function (addr) {
+              return '<div class="address-group"><div style="font-weight:800;font-size:13px;color:var(--primary);margin-bottom:8px;">📍 ' + addr + '</div><div class="table-wrap">' +
+                renderTable(["Unit", "Jenis", "Status", "Aksi"], grp[addr].map(function (u) {
+                  return ['<strong>' + u.name + '</strong>', u.type, u.tenant ? 'Terisi (' + u.tenant.name + ')' : 'Kosong', '<button type="button" class="btn btn-red btn-sm" data-del-unit="' + u.id + '" ' + (u.tenant ? 'disabled' : '') + '>Hapus</button>'];
+                })) + '</div></div>';
+            }).join("");
+        $("btnAddUnit").addEventListener("click", function () {
+            var addr = $("nAddr").value.trim(), nm = $("nName").value.trim(), tp = $("nType").value;
+            if (!addr || !nm) return alert("Alamat dan Nama Unit wajib diisi.");
+            state.units.push({ id: "U-" + Date.now(), name: nm, type: tp, address: addr, dailyRate: tp === "Kamar Kos" ? Number($("nDaily").value || 0) : 0, monthlyRate: Number($("nMonth").value || 0), yearlyRate: Number($("nYear").value || 0), depositAmount: Number($("nDep").value || 0), tenant: null });
+            saveState(); renderOwnerDashboard();
           });
-
-          document.querySelectorAll("[data-del-unit]").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-              var id = btn.getAttribute("data-del-unit");
-              state.units = state.units.filter(function (u) { return u.id !== id; });
-              saveState();
-              renderOwnerDashboard();
+          box.querySelectorAll("[data-del-unit]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              state.units = state.units.filter(function (u) { return u.id !== b.getAttribute("data-del-unit"); });
+              saveState(); renderOwnerDashboard();
             });
           });
         }
-
         else if (activeOwnerTab === "tarif") {
-          box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 6px;">Pengaturan Kunci Tarif & Deposito (Otoritas Owner)</h4>' +
-              '<p style="margin:0 0 12px; font-size:12px; color:#64748b;">Petugas tidak dapat mengubah nominal ini saat mendaftarkan atau memperpanjang sewa.</p>' +
-              state.units.map(function (u, idx) {
-                return (
-                  '<div style="border:1px solid #cbd5e1; border-radius:12px; padding:12px; margin-bottom:10px;">' +
-                    '<div style="font-weight:800; margin-bottom:6px;">' + u.name + ' <small style="color:#64748b;">(' + u.address + ')</small></div>' +
-                    '<div class="row-2">' +
-                      '<div class="form-group"><label>Harian (Rp)</label><input type="number" data-rate-field="dailyRate" data-idx="' + idx + '" value="' + u.dailyRate + '" ' + (u.type !== "Kamar Kos" ? 'disabled' : '') + ' /></div>' +
-                      '<div class="form-group"><label>Bulanan (Rp)</label><input type="number" data-rate-field="monthlyRate" data-idx="' + idx + '" value="' + u.monthlyRate + '" /></div>' +
-                    '</div>' +
-                    '<div class="row-2">' +
-                      '<div class="form-group"><label>Tahunan (Rp)</label><input type="number" data-rate-field="yearlyRate" data-idx="' + idx + '" value="' + u.yearlyRate + '" /></div>' +
-                      '<div class="form-group"><label>Deposito (Rp)</label><input type="number" data-rate-field="depositAmount" data-idx="' + idx + '" value="' + u.depositAmount + '" /></div>' +
-                    '</div>' +
-                  '</div>'
-                );
-              }).join("") +
-              '<button type="button" class="btn btn-primary btn-block" id="btnSaveRates">Simpan Semua Kunci Tarif</button>' +
-            '</div>';
-
-          document.getElementById("btnSaveRates").addEventListener("click", function () {
-            document.querySelectorAll("[data-rate-field]").forEach(function (inp) {
-              var idx = Number(inp.getAttribute("data-idx"));
-              var field = inp.getAttribute("data-rate-field");
-              state.units[idx][field] = Number(inp.value || 0);
-            });
-            saveState();
-            alert("Tarif dan deposito berhasil dikunci.");
+          box.innerHTML = '<div class="card"><h4 style="margin:0 0 10px;">Kunci Tarif & Deposito (Otoritas Owner)</h4>' +
+            state.units.map(function (u, i) {
+              return '<div style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px;"><strong>' + u.name + '</strong> <small>(' + u.address + ')</small>' +
+                '<div class="row-2" style="margin-top:6px;"><div><label>Harian</label><input type="number" data-rf="dailyRate" data-i="' + i + '" value="' + u.dailyRate + '" ' + (u.type !== "Kamar Kos" ? 'disabled' : '') + ' /></div><div><label>Bulanan</label><input type="number" data-rf="monthlyRate" data-i="' + i + '" value="' + u.monthlyRate + '" /></div></div>' +
+                '<div class="row-2" style="margin-top:6px;"><div><label>Tahunan</label><input type="number" data-rf="yearlyRate" data-i="' + i + '" value="' + u.yearlyRate + '" /></div><div><label>Deposito</label><input type="number" data-rf="depositAmount" data-i="' + i + '" value="' + u.depositAmount + '" /></div></div></div>';
+            }).join("") + '<button type="button" id="btnSaveRates" class="btn btn-primary btn-block">Simpan Semua Kunci Tarif</button></div>';
+          $("btnSaveRates").addEventListener("click", function () {
+            box.querySelectorAll("[data-rf]").forEach(function (inp) { state.units[Number(inp.getAttribute("data-i"))][inp.getAttribute("data-rf")] = Number(inp.value || 0); });
+            saveState(); alert("Tarif dan deposito berhasil dikunci.");
           });
         }
-
         else if (activeOwnerTab === "kios") {
           box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 10px;">Tambah / Update Stok Barang Kios Kos</h4>' +
-              '<form id="addKiosProdForm">' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Kode Barcode *</label><input type="text" id="prodBarcode" placeholder="8991006" required /></div>' +
-                  '<div class="form-group"><label>Nama Barang *</label><input type="text" id="prodName" placeholder="Teh Botol 350ml" required /></div>' +
-                '</div>' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Harga Jual (Rp) *</label><input type="number" id="prodPrice" value="5000" required /></div>' +
-                  '<div class="form-group"><label>Tambah Stok *</label><input type="number" id="prodStock" value="24" required /></div>' +
-                '</div>' +
-                '<button type="submit" class="btn btn-primary btn-block">Simpan Barang Kios</button>' +
-              '</form>' +
-            '</div>' +
-            '<div class="card">' +
-              '<h4 style="margin:0 0 8px;">Daftar Inventaris Kios Kos</h4>' +
-              '<div class="table-wrap"><table><thead><tr><th>Barcode</th><th>Barang</th><th>Harga</th><th>Sisa Stok</th></tr></thead><tbody>' +
-              state.kiosProducts.map(function (p) {
-                return '<tr><td>' + p.barcode + '</td><td><strong>' + p.name + '</strong></td><td>' + formatRp(p.price) + '</td><td><strong>' + p.stock + '</strong></td></tr>';
-              }).join("") +
-              '</tbody></table></div>' +
-            '</div>';
-
-          document.getElementById("addKiosProdForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            var bc = document.getElementById("prodBarcode").value.trim();
-            var nm = document.getElementById("prodName").value.trim();
-            var pr = Number(document.getElementById("prodPrice").value || 0);
-            var st = Number(document.getElementById("prodStock").value || 0);
-            var existing = state.kiosProducts.find(function (p) { return p.barcode === bc; });
-            if (existing) {
-              existing.name = nm;
-              existing.price = pr;
-              existing.stock += st;
-            } else {
-              state.kiosProducts.push({ barcode: bc, name: nm, price: pr, stock: st });
-            }
-            saveState();
-            renderOwnerDashboard();
+            '<div class="card"><h4 style="margin:0 0 10px;">Tambah / Update Stok Kios</h4>' +
+              '<div class="row-2"><div class="form-group"><label>Barcode *</label><input type="text" id="pBc" placeholder="8991006" /></div><div class="form-group"><label>Nama Barang *</label><input type="text" id="pNm" placeholder="Teh Botol" /></div></div>' +
+              '<div class="row-2"><div class="form-group"><label>Harga Jual *</label><input type="number" id="pPr" value="5000" /></div><div class="form-group"><label>Tambah Stok *</label><input type="number" id="pSt" value="24" /></div></div>' +
+              '<button type="button" id="btnSaveProd" class="btn btn-primary btn-block">Simpan Barang</button>' +
+            '</div><div class="card"><h4 style="margin:0 0 8px;">Inventaris Kios</h4><div class="table-wrap">' +
+            renderTable(["Barcode", "Barang", "Harga", "Stok"], state.kiosProducts.map(function (p) { return [p.barcode, '<strong>' + p.name + '</strong>', fmtRp(p.price), '<strong>' + p.stock + '</strong>']; })) + '</div></div>';
+          $("btnSaveProd").addEventListener("click", function () {
+            var bc = $("pBc").value.trim(), nm = $("pNm").value.trim(), pr = Number($("pPr").value || 0), st = Number($("pSt").value || 0);
+            if (!bc || !nm) return alert("Barcode dan Nama Barang wajib diisi.");
+            var ex = state.kiosProducts.find(function (p) { return p.barcode === bc; });
+            if (ex) { ex.name = nm; ex.price = pr; ex.stock += st; } else state.kiosProducts.push({ barcode: bc, name: nm, price: pr, stock: st });
+            saveState(); renderOwnerDashboard();
           });
         }
-
         else if (activeOwnerTab === "keuangan") {
-          box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 8px;">Riwayat Pemasukan (Sewa, Perpanjangan & Kios)</h4>' +
-              '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Unit</th><th>Keterangan</th><th>Nominal</th></tr></thead><tbody>' +
-              state.transactions.map(function (t) {
-                return '<tr><td>' + formatDisplayDate(t.date) + '</td><td>' + t.category + '</td><td>' + t.unitName + '</td><td>' + t.desc + '</td><td><strong>' + formatRp(t.amount) + '</strong></td></tr>';
-              }).join("") +
-              '</tbody></table></div>' +
-            '</div>';
+          box.innerHTML = '<div class="card"><h4 style="margin:0 0 8px;">Riwayat Pemasukan</h4><div class="table-wrap">' +
+            renderTable(["Tanggal", "Kategori", "Unit", "Keterangan", "Nominal"], state.transactions.map(function (t) { return [fmtDate(t.date), t.category, t.unitName, t.desc, '<strong>' + fmtRp(t.amount) + '</strong>']; })) + '</div></div>';
         }
-
         else if (activeOwnerTab === "pengeluaran") {
           box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 10px;">Catat Pengeluaran Operasional</h4>' +
-              '<form id="addExpenseForm">' +
-                '<div class="row-2">' +
-                  '<div class="form-group"><label>Kategori</label><input type="text" id="expCat" placeholder="Listrik / Air / Perbaikan" required /></div>' +
-                  '<div class="form-group"><label>Nominal (Rp)</label><input type="number" id="expAmt" placeholder="150000" required /></div>' +
-                '</div>' +
-                '<div class="form-group"><label>Keterangan</label><input type="text" id="expDesc" placeholder="Detail pengeluaran" required /></div>' +
-                '<button type="submit" class="btn btn-red btn-block">Simpan Pengeluaran</button>' +
-              '</form>' +
-            '</div>' +
-            '<div class="card">' +
-              '<h4 style="margin:0 0 8px;">Daftar Pengeluaran</h4>' +
-              '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Nominal</th></tr></thead><tbody>' +
-              state.expenses.map(function (ex) {
-                return '<tr><td>' + formatDisplayDate(ex.date) + '</td><td>' + ex.category + '</td><td>' + ex.desc + '</td><td><strong>' + formatRp(ex.amount) + '</strong></td></tr>';
-              }).join("") +
-              '</tbody></table></div>' +
-            '</div>';
-
-          document.getElementById("addExpenseForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            state.expenses.unshift({
-              id: "EXP-" + Date.now(),
-              date: todayStr(),
-              category: document.getElementById("expCat").value.trim(),
-              desc: document.getElementById("expDesc").value.trim(),
-              amount: Number(document.getElementById("expAmt").value || 0)
-            });
-            saveState();
-            renderOwnerDashboard();
+            '<div class="card"><h4 style="margin:0 0 10px;">Catat Pengeluaran</h4>' +
+              '<div class="row-2"><div class="form-group"><label>Kategori *</label><input type="text" id="eCat" placeholder="Listrik / Air" /></div><div class="form-group"><label>Nominal (Rp) *</label><input type="number" id="eAmt" placeholder="150000" /></div></div>' +
+              '<div class="form-group"><label>Keterangan *</label><input type="text" id="eDesc" placeholder="Detail pengeluaran" /></div>' +
+              '<button type="button" id="btnAddExp" class="btn btn-red btn-block">Simpan Pengeluaran</button>' +
+            '</div><div class="card"><h4 style="margin:0 0 8px;">Daftar Pengeluaran</h4><div class="table-wrap">' +
+            renderTable(["Tanggal", "Kategori", "Keterangan", "Nominal"], state.expenses.map(function (e) { return [fmtDate(e.date), e.category, e.desc, '<strong>' + fmtRp(e.amount) + '</strong>']; })) + '</div></div>';
+          $("btnAddExp").addEventListener("click", function () {
+            var cat = $("eCat").value.trim(), desc = $("eDesc").value.trim(), amt = Number($("eAmt").value || 0);
+            if (!cat || !desc || amt <= 0) return alert("Lengkapi semua kolom pengeluaran.");
+            state.expenses.unshift({ id: "EXP-" + Date.now(), date: todayStr(), category: cat, desc: desc, amount: amt });
+            saveState(); renderOwnerDashboard();
           });
         }
-
         else if (activeOwnerTab === "petugas") {
-          box.innerHTML =
-           '<div class="card">' +
-              '<h4 style="margin:0 0 10px;">Kelola ID & PIN Petugas</h4>' +
-              state.staffAccounts.map(function (acc, i) {
-                return (
-                  '<div style="border:1px solid #cbd5e1; border-radius:10px; padding:10px; margin-bottom:8px;">' +
-                    '<strong>' + acc.name + '</strong> (' + (acc.role === "kos" ? "Kamar Kos & Kios" : "Rumah & Ruko") + ')' +
-                    '<div class="row-2" style="margin-top:6px;">' +
-                      '<div><label>ID Login</label><input type="text" data-staff-id="' + i + '" value="' + acc.id + '" /></div>' +
-                      '<div><label>PIN</label><input type="text" data-staff-pin="' + i + '" value="' + acc.pin + '" /></div>' +
-                    '</div>' +
-                  '</div>'
-                );
-              }).join("") +
-              '<button type="button" class="btn btn-primary btn-block" id="btnSaveStaff">Simpan Akun Petugas</button>' +
-            '</div>';
-
-          document.getElementById("btnSaveStaff").addEventListener("click", function () {
-            document.querySelectorAll("[data-staff-id]").forEach(function (inp) {
-              var idx = Number(inp.getAttribute("data-staff-id"));
-              state.staffAccounts[idx].id = inp.value.trim();
-            });
-            document.querySelectorAll("[data-staff-pin]").forEach(function (inp) {
-              var idx = Number(inp.getAttribute("data-staff-pin"));
-              state.staffAccounts[idx].pin = inp.value.trim();
-            });
-            saveState();
-            alert("Akun petugas diperbarui.");
+          box.innerHTML = '<div class="card"><h4 style="margin:0 0 10px;">Kelola ID & PIN Petugas</h4>' +
+            state.staffAccounts.map(function (a, i) {
+              return '<div style="border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;"><strong>' + a.name + '</strong>' +
+                '<div class="row-2" style="margin-top:6px;"><div><label>ID Login</label><input type="text" data-sid="' + i + '" value="' + a.id + '" /></div><div><label>PIN</label><input type="text" data-spin="' + i + '" value="' + a.pin + '" /></div></div></div>';
+            }).join("") + '<button type="button" id="btnSaveStaff" class="btn btn-primary btn-block">Simpan Akun Petugas</button></div>';
+          $("btnSaveStaff").addEventListener("click", function () {
+            box.querySelectorAll("[data-sid]").forEach(function (inp) { state.staffAccounts[Number(inp.getAttribute("data-sid"))].id = inp.value.trim(); });
+            box.querySelectorAll("[data-spin]").forEach(function (inp) { state.staffAccounts[Number(inp.getAttribute("data-spin"))].pin = inp.value.trim(); });
+            saveState(); alert("Akun petugas diperbarui.");
           });
         }
-
         else if (activeOwnerTab === "telegram") {
-          box.innerHTML =
-            '<div class="card">' +
-              '<h4 style="margin:0 0 10px;">Notifikasi Telegram & PIN Owner</h4>' +
-              '<form id="settingsForm">' +
-                '<div class="form-group"><label>PIN Rahasia Owner</label><input type="text" id="setOwnerPin" value="' + state.ownerPin + '" required /></div>' +
-                '<div class="form-group"><label>Telegram Bot Token</label><input type="text" id="setTgToken" value="' + state.telegramBotToken + '" placeholder="123456:ABC-DEF..." /></div>' +
-                '<div class="form-group"><label>Telegram Chat ID</label><input type="text" id="setTgChat" value="' + state.telegramChatId + '" placeholder="987654321" /></div>' +
-                '<button type="submit" class="btn btn-dark btn-block">Simpan Pengaturan</button>' +
-              '</form>' +
-            '</div>';
-
-          document.getElementById("settingsForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            state.ownerPin = document.getElementById("setOwnerPin").value.trim() || "1234";
-            state.telegramBotToken = document.getElementById("setTgToken").value.trim();
-            state.telegramChatId = document.getElementById("setTgChat").value.trim();
-            saveState();
-            alert("Pengaturan PIN & Telegram berhasil disimpan.");
+          box.innerHTML = '<div class="card"><h4 style="margin:0 0 10px;">Notifikasi Telegram & PIN Owner</h4>' +
+            '<div class="form-group"><label>PIN Rahasia Owner</label><input type="text" id="sPin" value="' + state.ownerPin + '" /></div>' +
+            '<div class="form-group"><label>Telegram Bot Token</label><input type="text" id="sTok" value="' + state.telegramBotToken + '" placeholder="123456:ABC-DEF..." /></div>' +
+            '<div class="form-group"><label>Telegram Chat ID</label><input type="text" id="sChat" value="' + state.telegramChatId + '" placeholder="987654321" /></div>' +
+            '<button type="button" id="btnSaveSet" class="btn btn-dark btn-block">Simpan Pengaturan</button></div>';
+          $("btnSaveSet").addEventListener("click", function () {
+            state.ownerPin = $("sPin").value.trim() || "1234";
+            state.telegramBotToken = $("sTok").value.trim();
+            state.telegramChatId = $("sChat").value.trim();
+            saveState(); alert("Pengaturan disimpan.");
           });
         }
       }
