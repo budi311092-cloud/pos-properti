@@ -67,7 +67,7 @@
     .pkg-btn:disabled { opacity: .4; cursor: not-allowed; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.62); z-index: 60; display: none; align-items: center; justify-content: center; padding: 14px; }
     .modal-backdrop.open { display: flex; }
-    .modal-box { width: 100%; max-width: 480px; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,.28); max-height: 92vh; display: flex; flex-direction: column; }
+    .modal-box { width: 100%; max-width: 490px; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,.28); max-height: 92vh; display: flex; flex-direction: column; }
     .modal-header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 2px solid; }
     .theme-green .modal-header { background: #d1fae5; border-color: #10b981; color: #065f46; }
     .theme-yellow .modal-header { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
@@ -89,7 +89,8 @@
     .alert-red { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
     .alert-green { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
     .alert-yellow { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
-    .inv-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+    .sub-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+    .promo-code-pill { font-family: monospace; font-size: 14px; font-weight: 800; background: #0f172a; color: #6ee7b7; padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; display: inline-block; }
     .hidden, #printArea { display: none !important; }
     @media print {
       body * { visibility: hidden; }
@@ -125,7 +126,7 @@
       <div class="card login-card">
         <span class="pill pill-teal">Akses Operasional</span>
         <h2 style="margin:10px 0 4px; font-size:20px;">Login Akun Petugas</h2>
-        <p style="margin:0 0 16px; font-size:13px; color:var(--muted);">Masukkan ID Login dan PIN sesuai penugasan wilayah Anda.</p>
+        <p style="margin:0 0 16px; font-size:13px; color:var(--muted);">Masukkan ID Login dan PIN sesuai penugasan properti Anda.</p>
         <div id="loginError" class="alert-box alert-red hidden"></div>
         <form id="loginForm" onsubmit="return false;">
           <div class="form-group"><label for="loginId">ID Login *</label><input type="text" id="loginId" placeholder="Masukkan ID Login" autocomplete="off" /></div>
@@ -177,8 +178,9 @@
         <div id="dueListContainer" style="margin-top:6px;"></div>
       </section>
       <div id="addressGroupedUnitsContainer"></div>
-        </main>
-        <main class="container hidden" id="viewKiosPos">
+    </main>
+
+    <main class="container hidden" id="viewKiosPos">
       <div style="margin-bottom:12px;"><button type="button" class="btn btn-outline btn-sm" id="btnBackFromPos">← Menu Utama</button></div>
       <div class="card">
         <h3 style="margin:0 0 4px;">Kasir Kios Kos (Scan Barcode)</h3>
@@ -192,8 +194,9 @@
       <div class="card">
         <h4 style="margin:0 0 10px;">Keranjang Belanja Kios</h4>
         <div class="table-wrap" id="posCartWrap"></div>
-        <div class="flex-between" style="margin-top:14px; padding-top:12px; border-top:2px solid #e2e8f0;">
-          <span style="font-weight:700;">Total Belanja</span>
+        <div id="posDiscountWrap" style="margin-top:12px;"></div>
+        <div class="flex-between" style="margin-top:12px; padding-top:12px; border-top:2px solid #e2e8f0;">
+          <span style="font-weight:700;">Total Bayar</span>
           <span style="font-size:18px; font-weight:800; color:var(--primary);" id="posTotalDisplay">Rp 0</span>
         </div>
         <div class="row-2" style="margin-top:12px;">
@@ -208,7 +211,6 @@
       <div id="ownerTabContent"></div>
     </main>
   </div>
-
   <div class="modal-backdrop" id="unitModalBackdrop">
     <div class="modal-box theme-green" id="unitModalBox">
       <div class="modal-header">
@@ -255,10 +257,11 @@
         measurementId: "G-M4BS1XG58R"
       };
 
-      var STORAGE_KEY = "melisa_properti_system_v9";
+      var STORAGE_KEY = "melisa_properti_system_v10";
       var EXPENSE_CATS = ["Gaji Karyawan", "Listrik (PLN / Token)", "PDAM / Air", "Perbaikan & Maintenance", "Kebersihan & Sampah", "Perlengkapan & Operasional", "Lainnya"];
-      var state = null, currentUserId = null, posCart = [], activeOwnerTab = "ringkasan", activeView = "viewLogin";
-      var dbDoc = null;
+      var state = null, currentUserId = null, posCart = [], posDiscountCtrl = null;
+      var activeOwnerTab = "ringkasan", activeView = "viewLogin", dbDoc = null;
+      var reportMonth = "", reportYear = "";
 
       function $(id) { return document.getElementById(id); }
       function fmtRp(n) { return "Rp " + Number(n || 0).toLocaleString("id-ID"); }
@@ -307,39 +310,108 @@
           rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>'; }).join("") + '</tbody></table>';
       }
 
+      function copyText(text, btn) {
+        function done() {
+          if (!btn) return;
+          var orig = btn.textContent;
+          btn.textContent = "✓ Tersalin";
+          setTimeout(function () { btn.textContent = orig; }, 1400);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+        } else fallbackCopy(text, done);
+      }
+
+      function fallbackCopy(text, cb) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+        if (cb) cb();
+      }
+
       function getDefaultInventory(type) {
         if (type === "Kamar Kos") {
           return [
-            "Kasur & Bantal (1 Set)",
-            "Lemari Pakaian (1 Unit)",
-            "Kipas Angin / AC (1 Unit)",
-            "TV & Remot (1 Set)",
-            "Toilet & Perlengkapan Kamar Mandi",
-            "Kunci Kamar & Gerbang (1 Set)",
-            "Kartu / Token Listrik"
+            "Kasur Springbed / Busa & Bantal (1 Set)",
+            "Lemari Pakaian & Gantungan (1 Unit)",
+            "TV & Remot TV (1 Set)",
+            "Toilet / Kloset, Gayung, Ember & Keran Kamar Mandi",
+            "AC / Kipas Angin & Remot (1 Unit)",
+            "Meja & Kursi Kamar (1 Set)",
+            "Kunci Pintu Kamar & Gerbang Utama (1 Set)",
+            "Token / Meteran Listrik & Saklar Lampu"
           ];
         }
         if (type === "Toko / Ruko") {
-          return ["Rolling Door / Pintu Kaca", "Kunci Utama & Gembok (1 Set)", "Meteran Listrik PLN", "Instalasi Air & Keran", "Lampu Penerangan Ruangan"];
+          return [
+            "Rolling Door / Pintu Kaca Utama & Gembok Pengaman",
+            "Meteran Listrik PLN & Panel MCB",
+            "Toilet / Kamar Mandi & Keran Air",
+            "Instalasi Lampu Penerangan & Stop Kontak Area Usaha",
+            "Kunci Pintu Belakang / Akses Darurat"
+          ];
         }
-        return ["Kunci Pintu Utama & Kamar", "Meteran Listrik & Air", "Pompa Air / Toren", "Lampu & Saklar Ruangan", "Pagar & Gerbang Rumah"];
+        return [
+          "Kunci Pintu Utama, Pintu Kamar & Pagar Gerbang (1 Set)",
+          "Meteran Listrik PLN & Token / KWH",
+          "Meteran Air PDAM / Pompa Air & Toren",
+          "Toilet / Kloset, Wastafel & Perlengkapan Kamar Mandi",
+          "Instalasi Lampu, Stop Kontak & Saklar Seluruh Ruangan",
+          "Bak Sampah & Kebersihan Halaman"
+        ];
+      }
+
+      function getPropertyAccessOptions(units) {
+        var pairs = {}, typeCounts = {};
+        (units || []).forEach(function (u) {
+          var tp = (u.type || "Kamar Kos").trim();
+          var addr = (u.address || "").trim();
+          var key = tp + "||" + addr;
+          if (!pairs[key]) {
+            pairs[key] = { key: key, type: tp, address: addr };
+            typeCounts[tp] = (typeCounts[tp] || 0) + 1;
+          }
+        });
+        return Object.keys(pairs).map(function (k) {
+          var item = pairs[k];
+          item.label = typeCounts[item.type] > 1 ? (item.type + " — 📍 " + item.address) : item.type;
+          return item;
+        });
+      }
+
+      function getStaffUnits(staff) {
+        if (!staff) return [];
+        var targets = staff.allowedTargets || [];
+        return state.units.filter(function (u) {
+          return targets.indexOf((u.type || "").trim() + "||" + (u.address || "").trim()) !== -1;
+        });
+      }
+
+      function staffHasKiosAccess(staff) {
+        return getStaffUnits(staff).some(function (u) { return u.type === "Kamar Kos"; });
       }
 
       function getDefaultState() {
         var t = todayStr();
         return {
           ownerPin: "1234", csName: "Admin CS", telegramBotToken: "", telegramChatId: "",
+          discountCodes: [],
           staffAccounts: [
-            { id: "hendra", name: "Hendra (Penjaga Kos)", pin: "1111", allowedAddresses: ["Jl. Melati No. 10, Arjawinangun, Cirebon"], canAccessKios: true },
-            { id: "sari", name: "Sari (Pengawas Rumah & Ruko)", pin: "2222", allowedAddresses: ["Perum Griya Indah Blok A, Cirebon", "Jl. Raya Pasar Pagi No. 03, Cirebon"], canAccessKios: false }
+            { id: "hendra", name: "Hendra (Penjaga Kos)", pin: "1111", allowedTargets: ["Kamar Kos||Jl. Melati No. 10, Arjawinangun, Cirebon"] },
+            { id: "sari", name: "Sari (Pengawas Rumah & Ruko)", pin: "2222", allowedTargets: ["Rumah Tinggal||Perum Griya Indah Blok A, Cirebon", "Toko / Ruko||Jl. Raya Pasar Pagi No. 03, Cirebon"] }
           ],
           units: [
             { id: "U-01", name: "Kamar 01", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: null },
-            { id: "U-02", name: "Kamar 02", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Rina Wulandari", phone: "081234567890", ktp: "3209124505980002", packageType: "bulanan", checkIn: shiftDate(t, -25), checkOut: shiftDate(t, 5), rentPaid: 850000, depositPaid: 500000, penjagaName: "Hendra", csName: "Admin CS", inventory: getDefaultInventory("Kamar Kos"), folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -25) }] } },
-            { id: "U-03", name: "Kamar 03", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Dimas Pratama", phone: "085722334455", ktp: "3209121102990004", packageType: "bulanan", checkIn: shiftDate(t, -10), checkOut: shiftDate(t, 20), rentPaid: 850000, depositPaid: 500000, penjagaName: "Hendra", csName: "Admin CS", inventory: getDefaultInventory("Kamar Kos"), folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -10) }] } },
+            { id: "U-02", name: "Kamar 02", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Rina Wulandari", phone: "081234567890", ktp: "3209124505980002", emergencyContact: { relation: "Ibu", name: "Ibu Hartini", phone: "081298765432" }, packageType: "bulanan", checkIn: shiftDate(t, -25), checkOut: shiftDate(t, 5), rentPaid: 850000, depositPaid: 500000, penjagaName: "Hendra", csName: "Admin CS", inventory: getDefaultInventory("Kamar Kos"), folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -25) }] } },
+            { id: "U-03", name: "Kamar 03", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: { name: "Dimas Pratama", phone: "085722334455", ktp: "3209121102990004", emergencyContact: { relation: "Ayah", name: "Bapak Suryadi", phone: "085711223344" }, packageType: "bulanan", checkIn: shiftDate(t, -10), checkOut: shiftDate(t, 20), rentPaid: 850000, depositPaid: 500000, penjagaName: "Hendra", csName: "Admin CS", inventory: getDefaultInventory("Kamar Kos"), folioCharges: [{ desc: "Sewa Bulanan Awal", amount: 850000, date: shiftDate(t, -10) }] } },
             { id: "U-04", name: "Kamar 04", type: "Kamar Kos", address: "Jl. Melati No. 10, Arjawinangun, Cirebon", dailyRate: 65000, monthlyRate: 850000, yearlyRate: 9500000, depositAmount: 500000, tenant: null },
-            { id: "U-05", name: "Rumah Blok A1", type: "Rumah Tinggal", address: "Perum Griya Indah Blok A, Cirebon", dailyRate: 0, monthlyRate: 2500000, yearlyRate: 27000000, depositAmount: 2000000, tenant: { name: "Bapak Budi Santoso", phone: "081399887766", ktp: "3274011208850001", packageType: "tahunan", checkIn: shiftDate(t, -120), checkOut: shiftDate(t, 245), rentPaid: 27000000, depositPaid: 2000000, penjagaName: "Sari", csName: "Admin CS", inventory: getDefaultInventory("Rumah Tinggal"), folioCharges: [{ desc: "Sewa Tahunan", amount: 27000000, date: shiftDate(t, -120) }] } },
-            { id: "U-06", name: "Ruko Pasar No. 03", type: "Toko / Ruko", address: "Jl. Raya Pasar Pagi No. 03, Cirebon", dailyRate: 0, monthlyRate: 3500000, yearlyRate: 38000000, depositAmount: 3000000, tenant: { name: "Toko Jaya Abadi (Ibu Dewi)", phone: "082144556677", ktp: "3274025504900003", packageType: "bulanan", checkIn: shiftDate(t, -27), checkOut: shiftDate(t, 3), rentPaid: 3500000, depositPaid: 3000000, penjagaName: "Sari", csName: "Admin CS", inventory: getDefaultInventory("Toko / Ruko"), folioCharges: [{ desc: "Sewa Ruko Bulanan", amount: 3500000, date: shiftDate(t, -27) }] } }
+            { id: "U-05", name: "Rumah Blok A1", type: "Rumah Tinggal", address: "Perum Griya Indah Blok A, Cirebon", dailyRate: 0, monthlyRate: 2500000, yearlyRate: 27000000, depositAmount: 2000000, tenant: { name: "Bapak Budi Santoso", phone: "081399887766", ktp: "3274011208850001", emergencyContact: { relation: "Saudara", name: "Andi Santoso", phone: "081355443322" }, packageType: "tahunan", checkIn: shiftDate(t, -120), checkOut: shiftDate(t, 245), rentPaid: 27000000, depositPaid: 2000000, penjagaName: "Sari", csName: "Admin CS", inventory: getDefaultInventory("Rumah Tinggal"), folioCharges: [{ desc: "Sewa Tahunan", amount: 27000000, date: shiftDate(t, -120) }] } },
+            { id: "U-06", name: "Ruko Pasar No. 03", type: "Toko / Ruko", address: "Jl. Raya Pasar Pagi No. 03, Cirebon", dailyRate: 0, monthlyRate: 3500000, yearlyRate: 38000000, depositAmount: 3000000, tenant: { name: "Toko Jaya Abadi (Ibu Dewi)", phone: "082144556677", ktp: "3274025504900003", emergencyContact: { relation: "Teman", name: "Ibu Ratna", phone: "082199887766" }, packageType: "bulanan", checkIn: shiftDate(t, -27), checkOut: shiftDate(t, 3), rentPaid: 3500000, depositPaid: 3000000, penjagaName: "Sari", csName: "Admin CS", inventory: getDefaultInventory("Toko / Ruko"), folioCharges: [{ desc: "Sewa Ruko Bulanan", amount: 3500000, date: shiftDate(t, -27) }] } }
           ],
           kiosProducts: [
             { barcode: "8991001", name: "Air Mineral 600ml", price: 4000, stock: 45 },
@@ -355,25 +427,31 @@
           expenses: [{ id: "EXP-01", date: t, category: "Listrik (PLN / Token)", location: "Jl. Melati No. 10, Arjawinangun, Cirebon", desc: "Token Listrik Area Kos", amount: 200000 }]
         };
       }
-
-      function normalizeState(raw) {
+    function normalizeState(raw) {
         var s = Object.assign({}, getDefaultState(), raw || {});
         if (!s.ownerPin) s.ownerPin = "1234";
         if (!s.csName) s.csName = "Admin CS";
+        if (!Array.isArray(s.discountCodes)) s.discountCodes = [];
         s.units = (s.units || []).map(function (u) {
           if (u.tenant) {
             u.tenant.depositPaid = Number(u.tenant.depositPaid || 0);
             u.tenant.folioCharges = Array.isArray(u.tenant.folioCharges) ? u.tenant.folioCharges : [];
             if (!Array.isArray(u.tenant.inventory)) u.tenant.inventory = getDefaultInventory(u.type);
+            if (!u.tenant.emergencyContact) u.tenant.emergencyContact = { relation: "-", name: "-", phone: "-" };
           }
           return u;
         });
         s.staffAccounts = (s.staffAccounts || []).map(function (a) {
-          if (!Array.isArray(a.allowedAddresses)) {
-            var matchUnits = s.units.filter(function (u) { return a.role === "kos" ? u.type === "Kamar Kos" : u.type !== "Kamar Kos"; });
-            a.allowedAddresses = uniqueAddresses(matchUnits);
+          if (!Array.isArray(a.allowedTargets)) {
+            var addrs = Array.isArray(a.allowedAddresses) ? a.allowedAddresses : [];
+            var targets = [];
+            s.units.forEach(function (u) {
+              var match = addrs.length ? addrs.indexOf((u.address || "").trim()) !== -1 : (a.role === "kos" ? u.type === "Kamar Kos" : u.type !== "Kamar Kos");
+              var k = (u.type || "").trim() + "||" + (u.address || "").trim();
+              if (match && targets.indexOf(k) === -1) targets.push(k);
+            });
+            a.allowedTargets = targets;
           }
-          if (typeof a.canAccessKios !== "boolean") a.canAccessKios = a.role === "kos";
           return a;
         });
         return s;
@@ -392,7 +470,8 @@
             .catch(function () { setSyncStatus(false, "● Gagal Sync"); });
         }
       }
-     function getActiveStaff() {
+
+      function getActiveStaff() {
         if (!currentUserId || currentUserId === "owner") return null;
         return state.staffAccounts.find(function (a) { return a.id === currentUserId; }) || null;
       }
@@ -404,8 +483,9 @@
       function resolvePenjagaName(u) {
         var st = getActiveStaff();
         if (st) return cleanStaffName(st.name);
+        var targetKey = (u.type || "").trim() + "||" + (u.address || "").trim();
         var assigned = state.staffAccounts.find(function (a) {
-          return (a.allowedAddresses || []).indexOf((u.address || "").trim()) !== -1;
+          return (a.allowedTargets || []).indexOf(targetKey) !== -1;
         });
         return assigned ? cleanStaffName(assigned.name) : "Penjaga Lapangan";
       }
@@ -467,6 +547,74 @@
         setTimeout(function () { window.print(); }, 150);
       }
 
+      function renderDiscountBox(prefix) {
+        return '<div class="sub-box" style="margin-bottom:10px;">' +
+          '<label for="' + prefix + 'Code">🎟️ Kode Diskon dari Owner (Opsional)</label>' +
+          '<div style="display:flex;gap:6px;">' +
+            '<input type="text" id="' + prefix + 'Code" placeholder="Masukkan kode diskon..." style="text-transform:uppercase;padding:8px 10px;font-size:13px;" autocomplete="off" />' +
+            '<button type="button" id="' + prefix + 'ApplyBtn" class="btn btn-dark btn-sm" style="white-space:nowrap;">Pakai Kode</button>' +
+          '</div>' +
+          '<div id="' + prefix + 'Msg" style="font-size:11px;margin-top:5px;font-weight:700;"></div>' +
+        '</div>';
+      }
+
+      function bindDiscountBox(prefix, scope, getBaseAmount, onChange) {
+        var applied = null;
+        var inp = $(prefix + "Code"), btn = $(prefix + "ApplyBtn"), msg = $(prefix + "Msg");
+
+        function calcCut() {
+          if (!applied) return 0;
+          var base = Math.max(0, Number(getBaseAmount() || 0));
+          if (base <= 0) return 0;
+          return applied.type === "percent"
+            ? Math.min(base, Math.round(base * applied.value / 100))
+            : Math.min(base, applied.value);
+        }
+
+        function refreshMsg() {
+          if (!applied) { msg.textContent = ""; return; }
+          var cut = calcCut();
+          msg.style.color = "#059669";
+          msg.textContent = "✓ Kode " + applied.code + " aktif: Potongan " + fmtRp(cut) + (applied.type === "percent" ? " (" + applied.value + "%)" : "") + " — otomatis terhapus setelah transaksi selesai.";
+        }
+
+        btn.addEventListener("click", function () {
+          var code = inp.value.trim().toUpperCase();
+          if (!code) { applied = null; refreshMsg(); onChange(); return; }
+          var found = (state.discountCodes || []).find(function (d) { return d.code.toUpperCase() === code; });
+          if (!found) {
+            applied = null;
+            msg.style.color = "#dc2626";
+            msg.textContent = "✕ Kode diskon tidak ditemukan atau sudah terpakai.";
+            return onChange();
+          }
+          if (found.scope !== "all" && found.scope !== scope) {
+            applied = null;
+            msg.style.color = "#dc2626";
+            msg.textContent = "✕ Kode ini hanya berlaku untuk " + (found.scope === "sewa" ? "Sewa Properti" : "Kasir Kios") + ".";
+            return onChange();
+          }
+          applied = found;
+          refreshMsg();
+          onChange();
+        });
+
+        return {
+          getDiscount: function () {
+            var cut = calcCut();
+            return applied ? { code: applied.code, amount: cut } : { code: "", amount: 0 };
+          },
+          recalc: function () { refreshMsg(); },
+          clear: function () { applied = null; inp.value = ""; refreshMsg(); },
+          consume: function () {
+            if (!applied) return;
+            var usedCode = applied.code.toUpperCase();
+            state.discountCodes = (state.discountCodes || []).filter(function (d) { return d.code.toUpperCase() !== usedCode; });
+            applied = null;
+          }
+        };
+      }
+
       function showView(id) {
         activeView = id;
         ["viewLogin", "viewKosMenu", "viewStaffUnits", "viewKiosPos", "viewOwnerDashboard"].forEach(function (v) {
@@ -480,8 +628,7 @@
         $("activeRoleLabel").textContent = "Owner";
         renderOwnerDashboard();
         showView("viewOwnerDashboard");
-      }
-
+              }
       function processLogin() {
         var idVal = $("loginId").value.trim().toLowerCase(), pinVal = $("loginPin").value.trim(), err = $("loginError");
         err.classList.add("hidden");
@@ -492,7 +639,7 @@
         currentUserId = staff.id;
         $("activeRoleLabel").textContent = staff.name;
         $("loginId").value = ""; $("loginPin").value = "";
-        if (staff.canAccessKios) showView("viewKosMenu");
+        if (staffHasKiosAccess(staff)) showView("viewKosMenu");
         else { renderStaffUnits(); showView("viewStaffUnits"); }
       }
 
@@ -523,9 +670,8 @@
 
       function renderStaffUnits() {
         var staff = getActiveStaff();
-        $("btnBackToKosMenu").classList.toggle("hidden", !(staff && staff.canAccessKios));
-        var allowed = staff ? (staff.allowedAddresses || []) : [];
-        var list = state.units.filter(function (u) { return allowed.indexOf((u.address || "").trim()) !== -1; });
+        $("btnBackToKosMenu").classList.toggle("hidden", !(staff && staffHasKiosAccess(staff)));
+        var list = getStaffUnits(staff);
         var due = list.filter(function (u) { return getUnitStatus(u).color === "red"; });
 
         $("dueCountBadge").textContent = due.length + " Unit";
@@ -605,32 +751,42 @@
           var defInv = getDefaultInventory(u.type);
           var penjagaAuto = resolvePenjagaName(u);
           var csAuto = state.csName || "Admin CS";
-
-          body.innerHTML =
+          var latestCalc = { rent: 0, dep: 0 };
+    body.innerHTML =
             '<form id="newRentalForm" onsubmit="return false;">' +
               '<div class="form-group"><label>Nama Lengkap Penyewa *</label><input type="text" id="regName" placeholder="Nama sesuai KTP" /></div>' +
               '<div class="row-2"><div class="form-group"><label>No. WhatsApp / HP *</label><input type="tel" id="regPhone" placeholder="08..." /></div><div class="form-group"><label>NIK KTP *</label><input type="text" id="regKtp" placeholder="16 digit NIK" /></div></div>' +
+              '<div class="sub-box">' +
+                '<div style="font-size:12px;font-weight:800;margin-bottom:6px;color:#0f172a;">👪 Kontak Penanggung Jawab / Darurat *</div>' +
+                '<div class="row-2">' +
+                  '<div class="form-group" style="margin-bottom:8px;"><label>Hubungan *</label><select id="regEcRel"><option value="Ayah">Ayah</option><option value="Ibu">Ibu</option><option value="Saudara">Saudara</option><option value="Teman">Teman</option></select></div>' +
+                  '<div class="form-group" style="margin-bottom:8px;"><label>No. HP Penanggung Jawab *</label><input type="tel" id="regEcPhone" placeholder="08..." /></div>' +
+                '</div>' +
+                '<div class="form-group" style="margin-bottom:0;"><label>Nama Penanggung Jawab *</label><input type="text" id="regEcName" placeholder="Nama lengkap penanggung jawab" /></div>' +
+              '</div>' +
               '<label>Pilih Paket Sewa *</label><div id="regPkgWrap"></div>' +
               '<div class="row-2"><div class="form-group"><label>Check-In *</label><input type="date" id="regCi" value="' + t + '" /></div><div class="form-group"><label>Check-Out *</label><input type="date" id="regCo" value="' + shiftDate(t, 0, 1) + '" /></div></div>' +
               '<div id="regNotice" class="alert-box alert-green"></div>' +
-              '<div id="regInvBox" class="inv-box">' +
-                '<div style="font-size:12px;font-weight:800;margin-bottom:6px;color:#0f172a;">📋 Checklist Inventaris Unit (Untuk Lampiran Perjanjian)</div>' +
+              '<div id="regInvBox" class="sub-box">' +
+                '<div style="font-size:12px;font-weight:800;margin-bottom:6px;color:#0f172a;">📋 Daftar Inventaris (' + u.type + ') — Cetak Bersama Perjanjian</div>' +
                 '<div id="regInvList">' +
                   defInv.map(function (it) {
                     return '<label class="chk-row"><input type="checkbox" class="reg-inv-chk" value="' + it + '" checked /><span>' + it + '</span></label>';
                   }).join("") +
                 '</div>' +
                 '<div style="display:flex;gap:6px;margin-top:8px;">' +
-                  '<input type="text" id="regExtraInv" placeholder="Tambah item inventaris lain..." style="padding:7px 10px;font-size:12px;" />' +
+                  '<input type="text" id="regExtraInv" placeholder="Tambah item inventaris khusus..." style="padding:7px 10px;font-size:12px;" />' +
                   '<button type="button" id="btnAddExtraInv" class="btn btn-outline btn-sm">+ Item</button>' +
                 '</div>' +
-                '<div style="font-size:11px;color:var(--muted);margin-top:8px;">TTD Otomatis: <strong>CS (' + csAuto + ')</strong> & <strong>Penjaga (' + penjagaAuto + ')</strong></div>' +
+                '<div style="font-size:11px;color:var(--muted);margin-top:8px;">TTD Otomatis: <strong>CS (' + csAuto + ')</strong> & <strong>Petugas (' + penjagaAuto + ')</strong></div>' +
               '</div>' +
+              renderDiscountBox("regDisc") +
               '<div class="row-2"><div class="form-group"><label>Tarif Sewa</label><input type="text" id="regRent" readonly /></div><div class="form-group"><label>Deposito</label><input type="text" id="regDep" readonly /></div></div>' +
-              '<div class="form-group"><label>Total Pembayaran Awal</label><input type="text" id="regTot" readonly style="font-size:16px;color:#065f46;" /></div>' +
+              '<div class="form-group"><label>Total Pembayaran Awal (Setelah Diskon)</label><input type="text" id="regTot" readonly style="font-size:16px;color:#065f46;" /></div>' +
               '<button type="button" id="btnSaveRental" class="btn btn-green btn-block" style="padding:12px;">Simpan Sewa & Cetak Perjanjian</button>' +
             '</form>';
-             $("btnAddExtraInv").addEventListener("click", function () {
+
+          $("btnAddExtraInv").addEventListener("click", function () {
             var val = $("regExtraInv").value.trim();
             if (!val) return;
             var safeVal = val.split('"').join("&quot;");
@@ -641,6 +797,16 @@
             $("regExtraInv").value = "";
           });
 
+          function updateRegTotals() {
+            var disc = discCtrl.getDiscount();
+            var netRent = Math.max(0, latestCalc.rent - disc.amount);
+            $("regRent").value = disc.amount > 0 ? (fmtRp(netRent) + " (Diskon " + fmtRp(disc.amount) + ")") : fmtRp(latestCalc.rent);
+            $("regDep").value = fmtRp(latestCalc.dep);
+            $("regTot").value = fmtRp(netRent + latestCalc.dep);
+          }
+
+          var discCtrl = bindDiscountBox("regDisc", "sewa", function () { return latestCalc.rent; }, updateRegTotals);
+
           var getPkg = setupPkgPicker($("regPkgWrap"), isKos, $("regCi"), $("regCo"), function (pkg, ci, co) {
             var notice = $("regNotice");
             var isDaily = pkg === "harian";
@@ -648,41 +814,58 @@
             $("btnSaveRental").textContent = isDaily ? "Simpan Sewa Harian" : "Simpan Sewa & Cetak Perjanjian";
             notice.className = isDaily ? "alert-box alert-yellow" : "alert-box alert-green";
             notice.innerHTML = isDaily
-              ? "Paket Harian: <strong>Tanpa Surat Perjanjian</strong> (Bill resmi dicetak saat Check-Out)."
-              : "Check-In (" + pkg.toUpperCase() + "): Otomatis mencetak <strong>Surat Perjanjian & Berita Acara Inventaris</strong> saja (Bill dicetak saat Check-Out).";
-            var calc = computeRate(u, pkg, ci, co);
-            $("regRent").value = fmtRp(calc.rent); $("regDep").value = fmtRp(calc.dep); $("regTot").value = fmtRp(calc.rent + calc.dep);
+              ? "Paket Harian: <strong>Tanpa Surat Perjanjian</strong> (Bill hotel dicetak saat Check-Out)."
+              : "Check-In (" + pkg.toUpperCase() + "): Otomatis mencetak <strong>Surat Perjanjian & Daftar Inventaris</strong> (Bill dicetak saat Check-Out).";
+            latestCalc = computeRate(u, pkg, ci, co);
+            discCtrl.recalc();
+            updateRegTotals();
           });
 
           $("btnSaveRental").addEventListener("click", function () {
             var pkg = getPkg(), nm = $("regName").value.trim(), ph = $("regPhone").value.trim(), ktp = $("regKtp").value.trim();
+            var ecRel = $("regEcRel").value, ecName = $("regEcName").value.trim(), ecPhone = $("regEcPhone").value.trim();
             var ci = $("regCi").value, co = $("regCo").value;
             if (!nm || !ph || !ktp) return alert("Lengkapi Nama, No. HP, dan NIK KTP penyewa.");
+            if (!ecName || !ecPhone) return alert("Lengkapi Nama dan No. HP Penanggung Jawab (" + ecRel + ").");
             if (!ci || !co || diffDays(ci, co) < 1) return alert("Tanggal Check-Out minimal 1 hari setelah Check-In.");
 
             var chosenInv = Array.prototype.slice.call(body.querySelectorAll(".reg-inv-chk:checked")).map(function (c) { return c.value; });
-            var calc = computeRate(u, pkg, ci, co);
+            var disc = discCtrl.getDiscount();
+            var netRent = Math.max(0, latestCalc.rent - disc.amount);
+            var charges = [{ desc: "Sewa " + pkg.toUpperCase() + " (" + fmtDate(ci) + " s/d " + fmtDate(co) + ")", amount: latestCalc.rent, date: todayStr() }];
+            if (disc.amount > 0) charges.push({ desc: "Diskon Voucher (" + disc.code + ")", amount: -disc.amount, date: todayStr() });
+
             u.tenant = {
-              name: nm, phone: ph, ktp: ktp, packageType: pkg, checkIn: ci, checkOut: co,
-              rentPaid: calc.rent, depositPaid: calc.dep,
+              name: nm, phone: ph, ktp: ktp,
+              emergencyContact: { relation: ecRel, name: ecName, phone: ecPhone },
+              packageType: pkg, checkIn: ci, checkOut: co,
+              rentPaid: netRent, depositPaid: latestCalc.dep,
               penjagaName: penjagaAuto, csName: csAuto,
               inventory: chosenInv.length ? chosenInv : defInv,
-              folioCharges: [{ desc: "Sewa " + pkg.toUpperCase() + " (" + fmtDate(ci) + " s/d " + fmtDate(co) + ")", amount: calc.rent, date: todayStr() }]
+              folioCharges: charges
             };
-            state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Sewa Properti", unitName: u.name, desc: "Sewa Baru (" + pkg + ") - " + nm, amount: calc.rent + calc.dep });
+            discCtrl.consume();
+            state.transactions.unshift({
+              id: "TRX-" + Date.now(), date: todayStr(), category: "Sewa Properti", unitName: u.name,
+              desc: "Sewa Baru (" + pkg + ") - " + nm + (disc.amount > 0 ? " [Diskon " + disc.code + ": -" + fmtRp(disc.amount) + "]" : ""),
+              amount: netRent + latestCalc.dep
+            });
             saveState();
-            sendTelegram("✅ SEWA BARU\nUnit: " + u.name + "\nPenyewa: " + nm + "\nPaket: " + pkg.toUpperCase() + "\nCheck-Out: " + fmtDate(co) + "\nTotal: " + fmtRp(calc.rent + calc.dep));
+            sendTelegram("✅ SEWA BARU\nUnit: " + u.name + "\nPenyewa: " + nm + "\nPJ (" + ecRel + "): " + ecName + " (" + ecPhone + ")\nPaket: " + pkg.toUpperCase() + "\nCheck-Out: " + fmtDate(co) + "\nTotal: " + fmtRp(netRent + latestCalc.dep));
             $("unitModalBackdrop").classList.remove("open");
             renderStaffUnits();
             if (pkg !== "harian") printAgreementDoc(u, u.tenant);
           });
         } else {
           var tn = u.tenant;
+          var ec = tn.emergencyContact || { relation: "-", name: "-", phone: "-" };
           body.innerHTML =
             '<div class="alert-box ' + (st.color === "red" ? "alert-red" : "alert-yellow") + '">' + (st.color === "red" ? "⚠️ Masa sewa " + st.label + " (" + fmtDate(tn.checkOut) + ")." : "Ditempati oleh <strong>" + tn.name + "</strong> s/d <strong>" + fmtDate(tn.checkOut) + "</strong>.") + '</div>' +
-            '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;">' +
-              '<div><strong>Penyewa:</strong> ' + tn.name + ' (' + tn.phone + ')</div><div><strong>Paket:</strong> ' + tn.packageType.toUpperCase() + '</div>' +
-              '<div><strong>Periode:</strong> ' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + '</div><div><strong>Deposito Tertahan:</strong> ' + fmtRp(tn.depositPaid) + '</div>' +
+            '<div class="sub-box" style="font-size:13px;">' +
+              '<div><strong>Penyewa:</strong> ' + tn.name + ' (' + tn.phone + ')</div>' +
+              '<div><strong>Penanggung Jawab:</strong> ' + ec.name + ' (' + ec.relation + ' · ' + ec.phone + ')</div>' +
+              '<div><strong>Paket:</strong> ' + tn.packageType.toUpperCase() + ' (' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + ')</div>' +
+              '<div><strong>Deposito Tertahan:</strong> ' + fmtRp(tn.depositPaid) + '</div>' +
             '</div>' +
             '<div class="row-2" style="margin-bottom:10px;"><button type="button" class="btn btn-primary" id="btnShowRenew">🔄 Perpanjang Sewa</button><button type="button" class="btn btn-red" id="btnShowCo">🚪 Check-Out</button></div>' +
             '<button type="button" class="btn btn-outline btn-block btn-sm" id="btnReprint">🖨️ Cetak Ulang ' + (tn.packageType === "harian" ? "Folio / Bill Sementara" : "Surat Perjanjian & Inventaris") + '</button>' +
@@ -695,27 +878,44 @@
 
           $("btnShowRenew").addEventListener("click", function () {
             var startR = tn.checkOut;
+            var baseRenCost = 0;
             $("subActionArea").innerHTML =
               '<div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:12px;">' +
                 '<h4 style="margin:0 0 8px;">Perpanjang Sewa</h4><div id="renPkgWrap"></div>' +
                 '<div class="row-2"><div class="form-group"><label>Mulai</label><input type="date" id="renStart" value="' + startR + '" readonly /></div><div class="form-group"><label>Check-Out Baru *</label><input type="date" id="renEnd" value="' + shiftDate(startR, 0, 1) + '" /></div></div>' +
+                renderDiscountBox("renDisc") +
                 '<div class="form-group"><label>Tarif Perpanjangan</label><input type="text" id="renCost" readonly /></div>' +
                 '<button type="button" id="btnSubmitRenew" class="btn btn-green btn-block">Simpan Perpanjangan & Cetak Bill</button>' +
               '</div>';
+    function updateRenCost() {
+              var disc = renDiscCtrl.getDiscount();
+              var net = Math.max(0, baseRenCost - disc.amount);
+              $("renCost").value = disc.amount > 0 ? (fmtRp(net) + " (Diskon " + fmtRp(disc.amount) + ")") : fmtRp(baseRenCost);
+            }
+
+            var renDiscCtrl = bindDiscountBox("renDisc", "sewa", function () { return baseRenCost; }, updateRenCost);
 
             var getRenPkg = setupPkgPicker($("renPkgWrap"), isKos, $("renStart"), $("renEnd"), function (rPkg, ci, co) {
-              $("renCost").value = fmtRp(computeRate(u, rPkg, ci, co).rent);
+              baseRenCost = computeRate(u, rPkg, ci, co).rent;
+              renDiscCtrl.recalc();
+              updateRenCost();
             });
 
             $("btnSubmitRenew").addEventListener("click", function () {
               var rPkg = getRenPkg(), newEnd = $("renEnd").value;
               if (!newEnd || diffDays(startR, newEnd) < 1) return alert("Pilih tanggal Check-Out baru yang valid.");
-              var cost = computeRate(u, rPkg, startR, newEnd).rent;
-              tn.packageType = rPkg; tn.checkOut = newEnd; tn.rentPaid += cost;
-              tn.folioCharges.push({ desc: "Perpanjangan " + rPkg.toUpperCase() + " (" + fmtDate(startR) + " s/d " + fmtDate(newEnd) + ")", amount: cost, date: todayStr() });
-              state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Perpanjangan Sewa", unitName: u.name, desc: "Perpanjangan (" + rPkg + ") - " + tn.name, amount: cost });
+              var disc = renDiscCtrl.getDiscount();
+              var netCost = Math.max(0, baseRenCost - disc.amount);
+              tn.packageType = rPkg; tn.checkOut = newEnd; tn.rentPaid += netCost;
+              tn.folioCharges.push({ desc: "Perpanjangan " + rPkg.toUpperCase() + " (" + fmtDate(startR) + " s/d " + fmtDate(newEnd) + ")", amount: baseRenCost, date: todayStr() });
+              if (disc.amount > 0) tn.folioCharges.push({ desc: "Diskon Voucher (" + disc.code + ")", amount: -disc.amount, date: todayStr() });
+              renDiscCtrl.consume();
+              state.transactions.unshift({
+                id: "TRX-" + Date.now(), date: todayStr(), category: "Perpanjangan Sewa", unitName: u.name,
+                desc: "Perpanjangan (" + rPkg + ") - " + tn.name + (disc.amount > 0 ? " [Diskon " + disc.code + "]" : ""), amount: netCost
+              });
               saveState();
-              sendTelegram("🔄 PERPANJANGAN SEWA\nUnit: " + u.name + "\nPenyewa: " + tn.name + "\nTempo Baru: " + fmtDate(newEnd) + "\nNominal: " + fmtRp(cost));
+              sendTelegram("🔄 PERPANJANGAN SEWA\nUnit: " + u.name + "\nPenyewa: " + tn.name + "\nTempo Baru: " + fmtDate(newEnd) + "\nNominal: " + fmtRp(netCost));
               var snap = JSON.parse(JSON.stringify(tn));
               $("unitModalBackdrop").classList.remove("open");
               renderStaffUnits();
@@ -757,6 +957,7 @@
         var invItems = (tn.inventory && tn.inventory.length) ? tn.inventory : getDefaultInventory(u.type);
         var penjagaTxt = tn.penjagaName || resolvePenjagaName(u);
         var csTxt = tn.csName || state.csName || "Admin CS";
+        var ec = tn.emergencyContact || { relation: "-", name: "-", phone: "-" };
         var invRows = invItems.map(function (item, idx) {
           return '<tr>' +
             '<td style="border:1px solid #000;padding:6px;text-align:center;">' + (idx + 1) + '</td>' +
@@ -772,11 +973,12 @@
             '<p style="text-align:center;margin:0 0 14px;font-size:12px;">' + u.address + '</p>' +
             '<ol style="line-height:1.6;padding-left:20px;margin-bottom:14px;">' +
               '<li><strong>Pihak Penyewa:</strong> ' + tn.name + ' (NIK: ' + tn.ktp + ', No. HP: ' + tn.phone + ') menyewa unit <strong>' + u.name + ' (' + u.type + ')</strong>.</li>' +
+              '<li><strong>Penanggung Jawab / Kontak Darurat:</strong> ' + ec.name + ' (Hubungan: <strong>' + ec.relation + '</strong>, No. HP: <strong>' + ec.phone + '</strong>).</li>' +
               '<li><strong>Masa Sewa:</strong> ' + fmtDate(tn.checkIn) + ' s/d ' + fmtDate(tn.checkOut) + ' (Paket ' + tn.packageType.toUpperCase() + ').</li>' +
-              '<li><strong>Biaya & Deposito Jaminan:</strong> Sewa sebesar <strong>' + fmtRp(tn.rentPaid) + '</strong> dan Deposito Jaminan sebesar <strong>' + fmtRp(tn.depositPaid) + '</strong> (dikembalikan saat Check-Out setelah pengecekan inventaris & kondisi unit).</li>' +
-              '<li><strong>Tata Tertib & Tanggung Jawab:</strong> Penyewa wajib menjaga kebersihan, ketertiban lingkungan, serta kelengkapan seluruh inventaris unit di bawah ini dan bertanggung jawab atas kerusakan maupun kehilangan selama masa sewa.</li>' +
+              '<li><strong>Biaya & Deposito Jaminan:</strong> Sewa dibayar sebesar <strong>' + fmtRp(tn.rentPaid) + '</strong> dan Deposito Jaminan sebesar <strong>' + fmtRp(tn.depositPaid) + '</strong> (dikembalikan saat Check-Out setelah pengecekan kelengkapan inventaris & kondisi unit).</li>' +
+              '<li><strong>Klausul Tata Tertib & Tanggung Jawab:</strong> Penyewa wajib menjaga kebersihan, ketertiban lingkungan, tidak melanggar hukum, serta menjaga keutuhan seluruh inventaris properti yang tercantum di bawah ini dan bersedia mengganti kerusakan maupun kehilangan selama masa sewa.</li>' +
             '</ol>' +
-            '<h4 style="margin:12px 0 6px;font-size:12px;">DAFTAR INVENTARIS UNIT (CEK BERSAMA CS, PENJAGA & PENYEWA)</h4>' +
+            '<h4 style="margin:12px 0 6px;font-size:12px;">DAFTAR INVENTARIS PROPERTI (' + u.type.toUpperCase() + ')</h4>' +
             '<table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr>' +
               '<th style="border:1px solid #000;padding:6px;width:36px;text-align:center;">No</th>' +
               '<th style="border:1px solid #000;padding:6px;">Item Inventaris</th>' +
@@ -785,13 +987,14 @@
             '</tr></thead><tbody>' + invRows + '</tbody></table>' +
             '<div style="display:flex;justify-content:space-between;margin-top:38px;text-align:center;font-size:12px;">' +
               '<div style="width:31%;">Mengetahui CS,<br><br><br><br><strong>( ' + csTxt + ' )</strong></div>' +
-              '<div style="width:31%;">Penjaga Lapangan,<br><br><br><br><strong>( ' + penjagaTxt + ' )</strong></div>' +
+              '<div style="width:31%;">Petugas / Pengurus,<br><br><br><br><strong>( ' + penjagaTxt + ' )</strong></div>' +
               '<div style="width:31%;">Penyewa,<br><br><br><br><strong>( ' + tn.name + ' )</strong></div>' +
             '</div>' +
           '</div>'
         );
-    }
-    function printHotelBill(u, tn, opts) {
+      }
+
+      function printHotelBill(u, tn, opts) {
         var o = opts || {};
         var isCo = !!o.isCheckout;
         var ded = Number(o.ded || 0);
@@ -806,11 +1009,12 @@
           : [{ date: tn.checkIn, desc: "Sewa " + tn.packageType.toUpperCase() + " (" + fmtDate(tn.checkIn) + " s/d " + fmtDate(tn.checkOut) + ")", amount: tn.rentPaid }];
 
         var ledgerRows = charges.map(function (c) {
+          var isNeg = Number(c.amount) < 0;
           return '<tr>' +
             '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;">' + fmtDate(c.date) + '</td>' +
             '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;">' + c.desc + '</td>' +
-            '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;text-align:right;">' + fmtRp(c.amount) + '</td>' +
-            '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;text-align:right;">-</td>' +
+            '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;text-align:right;">' + (isNeg ? '-' : fmtRp(c.amount)) + '</td>' +
+            '<td style="padding:7px 8px;border-bottom:1px solid #e2e8f0;text-align:right;">' + (isNeg ? fmtRp(Math.abs(c.amount)) : '-') + '</td>' +
           '</tr>';
         });
 
@@ -858,8 +1062,7 @@
               '<tr><td style="padding:4px 0;color:#475569;">Deposito Tertahan</td><td style="padding:4px 0;text-align:right;font-weight:700;">' + fmtRp(tn.depositPaid) + '</td></tr>' +
               '<tr><td style="padding:8px 0 4px;border-top:2px solid #0f172a;font-weight:800;font-size:13px;">SISA TAGIHAN (BALANCE)</td><td style="padding:8px 0 4px;border-top:2px solid #0f172a;text-align:right;font-weight:800;font-size:14px;">Rp 0 (LUNAS)</td></tr>' +
             '</table>';
-
-        triggerPrint(
+  triggerPrint(
           '<div style="max-width:680px;margin:0 auto;border:1.5px solid #0f172a;padding:24px;font-family:\'Segoe UI\',Arial,sans-serif;color:#0f172a;font-size:12px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0f172a;padding-bottom:14px;margin-bottom:16px;">' +
               '<div>' +
@@ -912,10 +1115,18 @@
         );
       }
 
+      function getCartSubtotal() {
+        return posCart.reduce(function (s, it) { return s + (it.price * it.qty); }, 0);
+      }
+
       function renderPosView() {
         $("quickProductSelect").innerHTML = state.kiosProducts.map(function (p) {
           return '<option value="' + p.barcode + '">' + p.name + ' (' + fmtRp(p.price) + ' · Stok: ' + p.stock + ')</option>';
         }).join("");
+        if (!posDiscountCtrl) {
+          $("posDiscountWrap").innerHTML = renderDiscountBox("posDisc");
+          posDiscountCtrl = bindDiscountBox("posDisc", "kios", getCartSubtotal, renderPosCart);
+        }
         renderPosCart();
       }
 
@@ -928,21 +1139,29 @@
           if (item.qty + 1 > p.stock) return alert("Stok maksimal: " + p.stock);
           item.qty++;
         } else posCart.push({ barcode: p.barcode, name: p.name, price: p.price, qty: 1 });
+        if (posDiscountCtrl) posDiscountCtrl.recalc();
         renderPosCart();
       }
+
       function renderPosCart() {
-        var tot = 0;
+        var subTot = getCartSubtotal();
         var rows = posCart.map(function (it, idx) {
-          var sub = it.price * it.qty; tot += sub;
+          var sub = it.price * it.qty;
           return ['<strong>' + it.name + '</strong><br><small>' + it.barcode + '</small>', fmtRp(it.price), it.qty, '<strong>' + fmtRp(sub) + '</strong>', '<button type="button" class="btn btn-red btn-sm" data-del-cart="' + idx + '">×</button>'];
         });
         $("posCartWrap").innerHTML = renderTable(["Barang", "Harga", "Qty", "Subtotal", ""], rows, "Keranjang masih kosong.");
-        $("posTotalDisplay").textContent = fmtRp(tot);
+        var disc = posDiscountCtrl ? posDiscountCtrl.getDiscount() : { code: "", amount: 0 };
+        var netTot = Math.max(0, subTot - disc.amount);
+        $("posTotalDisplay").textContent = disc.amount > 0 ? (fmtRp(netTot) + " (Hemat " + fmtRp(disc.amount) + ")") : fmtRp(subTot);
       }
 
       $("posCartWrap").addEventListener("click", function (e) {
         var b = e.target.closest("[data-del-cart]");
-        if (b) { posCart.splice(Number(b.getAttribute("data-del-cart")), 1); renderPosCart(); }
+        if (b) {
+          posCart.splice(Number(b.getAttribute("data-del-cart")), 1);
+          if (posDiscountCtrl) posDiscountCtrl.recalc();
+          renderPosCart();
+        }
       });
       $("barcodeScanInput").addEventListener("keydown", function (e) {
         if (e.key === "Enter") { e.preventDefault(); if (this.value.trim()) { addToCart(this.value.trim()); this.value = ""; } }
@@ -951,26 +1170,38 @@
         var code = $("barcodeScanInput").value.trim() || $("quickProductSelect").value;
         $("barcodeScanInput").value = ""; addToCart(code);
       });
-      $("btnClearCart").addEventListener("click", function () { posCart = []; renderPosCart(); });
+      $("btnClearCart").addEventListener("click", function () {
+        posCart = [];
+        if (posDiscountCtrl) posDiscountCtrl.clear();
+        renderPosCart();
+      });
       $("btnCheckoutPos").addEventListener("click", function () {
         if (!posCart.length) return alert("Keranjang masih kosong.");
-        var tot = 0, qtyAll = 0;
+        var subTot = getCartSubtotal(), qtyAll = 0;
         posCart.forEach(function (c) {
-          tot += c.price * c.qty; qtyAll += c.qty;
+          qtyAll += c.qty;
           var p = state.kiosProducts.find(function (x) { return x.barcode === c.barcode; });
           if (p) p.stock = Math.max(0, p.stock - c.qty);
         });
-        state.transactions.unshift({ id: "TRX-" + Date.now(), date: todayStr(), category: "Kios Kos", unitName: "Kios Kos", desc: "Penjualan Kios (" + qtyAll + " item)", amount: tot });
+        var disc = posDiscountCtrl ? posDiscountCtrl.getDiscount() : { code: "", amount: 0 };
+        var netTot = Math.max(0, subTot - disc.amount);
+        if (posDiscountCtrl) { posDiscountCtrl.consume(); posDiscountCtrl.clear(); }
+
+        state.transactions.unshift({
+          id: "TRX-" + Date.now(), date: todayStr(), category: "Kios Kos", unitName: "Kios Kos",
+          desc: "Penjualan Kios (" + qtyAll + " item)" + (disc.amount > 0 ? " [Diskon " + disc.code + "]" : ""), amount: netTot
+        });
         var snap = JSON.parse(JSON.stringify(posCart));
         posCart = []; saveState(); renderPosView();
         triggerPrint('<div style="max-width:300px;border:1px dashed #000;padding:12px;font-family:monospace;"><h3 style="margin:0;text-align:center;">STRUK KIOS KOS</h3><div style="text-align:center;font-size:11px;margin-bottom:8px;">' + fmtDate(todayStr()) + '</div>' +
           snap.map(function (i) { return '<div style="display:flex;justify-content:space-between;font-size:12px;"><span>' + i.name + ' x' + i.qty + '</span><span>' + fmtRp(i.price * i.qty) + '</span></div>'; }).join("") +
-          '<hr><div style="display:flex;justify-content:space-between;font-weight:bold;"><span>TOTAL</span><span>' + fmtRp(tot) + '</span></div></div>');
+          (disc.amount > 0 ? '<div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px;"><span>Diskon (' + disc.code + ')</span><span>-' + fmtRp(disc.amount) + '</span></div>' : '') +
+          '<hr><div style="display:flex;justify-content:space-between;font-weight:bold;"><span>TOTAL BAYAR</span><span>' + fmtRp(netTot) + '</span></div></div>');
       });
 
       var OWNER_TABS = [
         ["ringkasan", "1. Ringkasan"], ["unit", "2. Unit & Alamat"], ["tarif", "3. Kunci Tarif"], ["kios", "4. Stok Kios"],
-        ["pengeluaran", "5. Pengeluaran"], ["petugas", "6. Akun Petugas"], ["telegram", "7. Pengaturan & PIN"]
+        ["pengeluaran", "5. Pengeluaran"], ["petugas", "6. Akun Petugas"], ["diskon", "7. Kode Diskon"], ["telegram", "8. Pengaturan & PIN"]
       ];
 
       $("ownerTabBar").addEventListener("click", function (e) {
@@ -985,12 +1216,30 @@
 
         var box = $("ownerTabContent");
         if (activeOwnerTab === "ringkasan") {
+          var t = todayStr();
+          if (!reportMonth) reportMonth = t.slice(0, 7);
+          if (!reportYear) reportYear = t.slice(0, 4);
+
+          var monthSet = {}, yearSet = {};
+          monthSet[reportMonth] = true; yearSet[reportYear] = true;
+          state.transactions.forEach(function (x) { if (x.date) { monthSet[x.date.slice(0, 7)] = true; yearSet[x.date.slice(0, 4)] = true; } });
+          state.expenses.forEach(function (x) { if (x.date) { monthSet[x.date.slice(0, 7)] = true; yearSet[x.date.slice(0, 4)] = true; } });
+          var months = Object.keys(monthSet).sort().reverse();
+          var years = Object.keys(yearSet).sort().reverse();
+
+          var mTx = state.transactions.filter(function (x) { return (x.date || "").indexOf(reportMonth) === 0; });
+          var mEx = state.expenses.filter(function (x) { return (x.date || "").indexOf(reportMonth) === 0; });
+          var mInc = mTx.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0);
+          var mExp = mEx.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0);
+    var yTx = state.transactions.filter(function (x) { return (x.date || "").indexOf(reportYear) === 0; });
+          var yEx = state.expenses.filter(function (x) { return (x.date || "").indexOf(reportYear) === 0; });
+          var yInc = yTx.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0);
+          var yExp = yEx.reduce(function (s, x) { return s + Number(x.amount || 0); }, 0);
+
           var occUnits = state.units.filter(function (u) { return !!u.tenant; });
           var depUnits = occUnits.filter(function (u) { return Number(u.tenant.depositPaid || 0) > 0; });
           var totDep = depUnits.reduce(function (s, u) { return s + Number(u.tenant.depositPaid || 0); }, 0);
           var due = state.units.filter(function (u) { return getUnitStatus(u).color === "red"; }).length;
-          var inc = state.transactions.reduce(function (s, t) { return s + Number(t.amount || 0); }, 0);
-          var exp = state.expenses.reduce(function (s, e) { return s + Number(e.amount || 0); }, 0);
 
           var depRows = depUnits.map(function (u) {
             return ['<strong>' + u.name + '</strong><br><small>' + u.address + '</small>', u.tenant.name, fmtDate(u.tenant.checkOut), '<strong>' + fmtRp(u.tenant.depositPaid) + '</strong>'];
@@ -999,19 +1248,47 @@
 
           box.innerHTML =
             '<div class="stat-grid">' +
-              '<div class="stat-box"><div style="font-size:11px;color:var(--muted);">Okupansi</div><div class="stat-val">' + occUnits.length + ' / ' + state.units.length + ' Terisi</div></div>' +
+              '<div class="stat-box"><div style="font-size:11px;color:var(--muted);">Okupansi Unit</div><div class="stat-val">' + occUnits.length + ' / ' + state.units.length + ' Terisi</div></div>' +
               '<div class="stat-box"><div style="font-size:11px;color:#dc2626;">Jatuh Tempo (H-7)</div><div class="stat-val" style="color:#dc2626;">' + due + ' Unit</div></div>' +
               '<div class="stat-box"><div style="font-size:11px;color:#b45309;">Deposito Tertahan</div><div class="stat-val" style="color:#b45309;">' + fmtRp(totDep) + '</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px;color:#059669;">Total Pemasukan</div><div class="stat-val" style="color:#059669;">' + fmtRp(inc) + '</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px;color:#dc2626;">Total Pengeluaran</div><div class="stat-val" style="color:#dc2626;">' + fmtRp(exp) + '</div></div>' +
-              '<div class="stat-box"><div style="font-size:11px;">Saldo Bersih</div><div class="stat-val">' + fmtRp(inc - exp) + '</div></div>' +
             '</div>' +
+            '<div class="row-2">' +
+              '<div class="card" style="margin-bottom:14px;">' +
+                '<div class="flex-between" style="margin-bottom:8px;">' +
+                  '<strong style="font-size:13px;color:var(--primary);">📅 Laporan 1 Bulan</strong>' +
+                  '<select id="repMonthSel" style="width:auto;padding:5px 8px;font-size:12px;">' + months.map(function (m) { return '<option value="' + m + '" ' + (m === reportMonth ? 'selected' : '') + '>' + m + '</option>'; }).join("") + '</select>' +
+                '</div>' +
+                '<div style="font-size:12px;line-height:1.8;">' +
+                  '<div class="flex-between"><span>Pemasukan (' + mTx.length + ' trx):</span><strong style="color:#059669;">' + fmtRp(mInc) + '</strong></div>' +
+                  '<div class="flex-between"><span>Pengeluaran (' + mEx.length + ' item):</span><strong style="color:#dc2626;">' + fmtRp(mExp) + '</strong></div>' +
+                  '<div class="flex-between" style="border-top:1px dashed var(--border);padding-top:4px;margin-top:4px;"><span>Laba Bersih Bulan Ini:</span><strong>' + fmtRp(mInc - mExp) + '</strong></div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="card" style="margin-bottom:14px;">' +
+                '<div class="flex-between" style="margin-bottom:8px;">' +
+                  '<strong style="font-size:13px;color:#0f172a;">📆 Laporan 1 Tahun</strong>' +
+                  '<select id="repYearSel" style="width:auto;padding:5px 8px;font-size:12px;">' + years.map(function (y) { return '<option value="' + y + '" ' + (y === reportYear ? 'selected' : '') + '>' + y + '</option>'; }).join("") + '</select>' +
+                '</div>' +
+                '<div style="font-size:12px;line-height:1.8;">' +
+                  '<div class="flex-between"><span>Pemasukan (' + yTx.length + ' trx):</span><strong style="color:#059669;">' + fmtRp(yInc) + '</strong></div>' +
+                  '<div class="flex-between"><span>Pengeluaran (' + yEx.length + ' item):</span><strong style="color:#dc2626;">' + fmtRp(yExp) + '</strong></div>' +
+                  '<div class="flex-between" style="border-top:1px dashed var(--border);padding-top:4px;margin-top:4px;"><span>Laba Bersih Tahun Ini:</span><strong>' + fmtRp(yInc - yExp) + '</strong></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card"><h4 style="margin:0 0 8px;">Rincian Pemasukan Bulan ' + reportMonth + '</h4><div class="table-wrap">' +
+            renderTable(["Tanggal", "Kategori", "Unit", "Keterangan", "Nominal"], mTx.map(function (x) {
+              return [fmtDate(x.date), x.category, x.unitName, x.desc, '<strong style="color:#059669;">' + fmtRp(x.amount) + '</strong>'];
+            }), "Belum ada pemasukan pada bulan " + reportMonth + ".") + '</div></div>' +
             '<div class="card"><h4 style="margin:0 0 8px;color:#92400e;">🔒 Rincian Deposito Tertahan per Unit</h4><div class="table-wrap">' +
             renderTable(["Unit & Lokasi", "Penyewa", "Jatuh Tempo", "Nominal Deposito"], depRows, "Tidak ada deposito tertahan saat ini.") + '</div></div>' +
             '<div class="card"><h4 style="margin:0 0 8px;">Status Seluruh Unit</h4><div class="table-wrap">' +
             renderTable(["Unit", "Alamat", "Status", "Penyewa", "Jatuh Tempo"], state.units.map(function (u) {
               return ['<strong>' + u.name + '</strong><br><small>' + u.type + '</small>', u.address, '<strong>' + getUnitStatus(u).label + '</strong>', u.tenant ? u.tenant.name : '-', u.tenant ? fmtDate(u.tenant.checkOut) : '-'];
             })) + '</div></div>';
+
+          $("repMonthSel").addEventListener("change", function () { reportMonth = this.value; renderOwnerDashboard(); });
+          $("repYearSel").addEventListener("change", function () { reportYear = this.value; renderOwnerDashboard(); });
         }
         else if (activeOwnerTab === "unit") {
           var grp = {};
@@ -1100,40 +1377,41 @@
           });
         }
         else if (activeOwnerTab === "petugas") {
-          var propList = uniqueAddresses(state.units);
+          var propOpts = getPropertyAccessOptions(state.units);
           box.innerHTML =
-            '<div class="card"><h4 style="margin:0 0 10px;">+ Tambah Akun Petugas Baru</h4>' +
-              '<div class="form-group"><label>Nama Petugas *</label><input type="text" id="newStName" placeholder="Contoh: Budi (Penjaga Cabang)" /></div>' +
+            '<div class="card"><h4 style="margin:0 0 6px;">+ Tambah Akun Petugas Baru</h4>' +
+              '<p style="margin:0 0 10px;font-size:12px;color:var(--muted);">Akses Kasir Kios Kos otomatis aktif apabila petugas diberi akses jenis properti <strong>Kamar Kos</strong>.</p>' +
+              '<div class="form-group"><label>Nama Petugas *</label><input type="text" id="newStName" placeholder="Contoh: Budi (Penjaga Kos)" /></div>' +
               '<div class="row-2"><div class="form-group"><label>ID Login *</label><input type="text" id="newStId" placeholder="budi" autocomplete="off" /></div><div class="form-group"><label>PIN Rahasia *</label><input type="text" id="newStPin" inputmode="numeric" placeholder="3333" /></div></div>' +
-              '<div class="form-group"><label>Pilih Properti yang Bisa Diakses:</label>' +
-                (propList.length ? propList.map(function (addr, idx) { return '<label class="chk-row"><input type="checkbox" class="new-st-addr" value="' + addr + '" ' + (idx === 0 ? 'checked' : '') + ' /><span>📍 ' + addr + '</span></label>'; }).join("") : '<small style="color:var(--muted);">Belum ada alamat properti.</small>') +
-                '<label class="chk-row"><input type="checkbox" id="newStKios" /><span>🛒 Izinkan Akses Kasir Kios Kos</span></label>' +
+              '<div class="form-group"><label>Pilih Akses Jenis Properti:</label>' +
+                (propOpts.length ? propOpts.map(function (opt, idx) {
+                  return '<label class="chk-row"><input type="checkbox" class="new-st-target" value="' + opt.key + '" ' + (idx === 0 ? 'checked' : '') + ' /><span>' + opt.label + '</span></label>';
+                }).join("") : '<small style="color:var(--muted);">Belum ada unit properti.</small>') +
               '</div>' +
               '<button type="button" id="btnAddStaff" class="btn btn-green btn-block">+ Tambah Akun Petugas</button>' +
             '</div>' +
             '<div class="card"><h4 style="margin:0 0 10px;">Kelola PIN & Hak Akses Properti Petugas</h4>' +
             state.staffAccounts.map(function (a, i) {
-              var allowed = a.allowedAddresses || [];
-              var checks = propList.map(function (addr) {
-                var isChk = allowed.indexOf(addr) !== -1;
-                return '<label class="chk-row"><input type="checkbox" data-saddr="' + i + '" value="' + addr + '" ' + (isChk ? 'checked' : '') + ' /><span>📍 ' + addr + '</span></label>';
+              var allowed = a.allowedTargets || [];
+              var hasKios = staffHasKiosAccess(a);
+              var checks = propOpts.map(function (opt) {
+                var isChk = allowed.indexOf(opt.key) !== -1;
+                return '<label class="chk-row"><input type="checkbox" data-starget="' + i + '" value="' + opt.key + '" ' + (isChk ? 'checked' : '') + ' /><span>' + opt.label + '</span></label>';
               }).join("");
               return '<div style="border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;">' +
-                '<div class="flex-between" style="margin-bottom:8px;"><strong>Akun #' + (i + 1) + '</strong>' +
+                '<div class="flex-between" style="margin-bottom:8px;"><strong>Akun #' + (i + 1) + ' ' + (hasKios ? '<span class="pill pill-teal">+ Kasir Kios</span>' : '') + '</strong>' +
                 (state.staffAccounts.length > 1 ? '<button type="button" class="btn btn-red btn-sm" data-del-staff="' + i + '">Hapus Akun</button>' : '') + '</div>' +
                 '<div class="form-group"><label>Nama Petugas</label><input type="text" data-sname="' + i + '" value="' + a.name + '" /></div>' +
                 '<div class="row-2"><div class="form-group"><label>ID Login</label><input type="text" data-sid="' + i + '" value="' + a.id + '" /></div><div class="form-group"><label>PIN Baru / Aktif</label><input type="text" inputmode="numeric" data-spin="' + i + '" value="' + a.pin + '" /></div></div>' +
-                '<label>Akses Properti & Fitur:</label>' + checks +
-                '<label class="chk-row"><input type="checkbox" data-skios="' + i + '" ' + (a.canAccessKios ? 'checked' : '') + ' /><span>🛒 Izinkan Akses Kasir Kios Kos</span></label>' +
+                '<label>Akses Jenis Properti:</label>' + checks +
               '</div>';
             }).join("") + '<button type="button" id="btnSaveStaff" class="btn btn-primary btn-block">Simpan Semua Akun Petugas</button></div>';
-
-          $("btnAddStaff").addEventListener("click", function () {
+    $("btnAddStaff").addEventListener("click", function () {
             var nm = $("newStName").value.trim(), id = $("newStId").value.trim().toLowerCase(), pin = $("newStPin").value.trim();
             if (!nm || !id || !pin) return alert("Nama, ID Login, dan PIN wajib diisi.");
             if (id === "owner" || state.staffAccounts.some(function (a) { return a.id.toLowerCase() === id; })) return alert("ID Login sudah dipakai.");
-            var addrs = Array.prototype.slice.call(box.querySelectorAll(".new-st-addr:checked")).map(function (c) { return c.value; });
-            state.staffAccounts.push({ id: id, name: nm, pin: pin, allowedAddresses: addrs, canAccessKios: $("newStKios").checked });
+            var targets = Array.prototype.slice.call(box.querySelectorAll(".new-st-target:checked")).map(function (c) { return c.value; });
+            state.staffAccounts.push({ id: id, name: nm, pin: pin, allowedTargets: targets });
             saveState(); renderOwnerDashboard();
           });
 
@@ -1151,11 +1429,57 @@
               var pin = box.querySelector('[data-spin="' + i + '"]').value.trim();
               if (!nm || !id || !pin) return alert("Nama, ID Login, dan PIN pada Akun #" + (i + 1) + " tidak boleh kosong.");
               if (id === "owner") return alert("ID Login tidak boleh menggunakan kata 'owner'.");
-              var addrs = Array.prototype.slice.call(box.querySelectorAll('[data-saddr="' + i + '"]:checked')).map(function (c) { return c.value; });
-              var kios = box.querySelector('[data-skios="' + i + '"]').checked;
-              state.staffAccounts[i] = { id: id, name: nm, pin: pin, allowedAddresses: addrs, canAccessKios: kios };
+              var targets = Array.prototype.slice.call(box.querySelectorAll('[data-starget="' + i + '"]:checked')).map(function (c) { return c.value; });
+              state.staffAccounts[i] = { id: id, name: nm, pin: pin, allowedTargets: targets };
             }
             saveState(); renderOwnerDashboard(); alert("PIN dan hak akses properti petugas berhasil disimpan.");
+          });
+        }
+        else if (activeOwnerTab === "diskon") {
+          var codes = state.discountCodes || [];
+          box.innerHTML =
+            '<div class="card"><h4 style="margin:0 0 6px;">🎟️ Buat Kode Diskon Acak (Sekali Pakai)</h4>' +
+              '<p style="margin:0 0 12px;font-size:12px;color:var(--muted);">Kode dibuat acak oleh sistem dan otomatis terhapus setelah digunakan dalam transaksi.</p>' +
+              '<div class="row-2">' +
+                '<div class="form-group"><label>Jenis Potongan</label><select id="dType"><option value="nominal">Potongan Nominal (Rp)</option><option value="percent">Potongan Persen (%)</option></select></div>' +
+                '<div class="form-group"><label>Nilai Potongan *</label><input type="number" id="dVal" placeholder="50000" min="1" /></div>' +
+              '</div>' +
+              '<div class="form-group"><label>Berlaku Untuk Transaksi</label><select id="dScope"><option value="all">Semua (Sewa Properti & Kasir Kios)</option><option value="sewa">Khusus Sewa / Perpanjangan Properti</option><option value="kios">Khusus Kasir Kios Kos</option></select></div>' +
+              '<button type="button" id="btnGenDisc" class="btn btn-green btn-block">🎲 Generate Kode Diskon Acak</button>' +
+            '</div>' +
+            '<div class="card"><h4 style="margin:0 0 8px;">Daftar Kode Diskon Aktif (Belum Terpakai)</h4><div class="table-wrap">' +
+            renderTable(["Kode Diskon", "Potongan", "Berlaku", "Aksi"], codes.map(function (d, idx) {
+              var pot = d.type === "percent" ? (d.value + "%") : fmtRp(d.value);
+              var sc = d.scope === "sewa" ? "Sewa Properti" : (d.scope === "kios" ? "Kasir Kios" : "Semua");
+              return [
+                '<span class="promo-code-pill">' + d.code + '</span>',
+                '<strong>' + pot + '</strong>',
+                sc,
+                '<div style="display:flex;gap:4px;">' +
+                  '<button type="button" class="btn btn-outline btn-sm" data-copy-disc="' + d.code + '">📋 Copy</button>' +
+                  '<button type="button" class="btn btn-red btn-sm" data-del-disc="' + idx + '">×</button>' +
+                '</div>'
+              ];
+            }), "Belum ada kode diskon aktif.") + '</div></div>';
+
+          $("btnGenDisc").addEventListener("click", function () {
+            var tp = $("dType").value, val = Number($("dVal").value || 0), sc = $("dScope").value;
+            if (val <= 0) return alert("Masukkan nilai diskon yang valid.");
+            if (tp === "percent" && val > 100) return alert("Diskon persen maksimal 100%.");
+            var rnd = Math.random().toString(36).substring(2, 6).toUpperCase() + Math.floor(10 + Math.random() * 90);
+            var code = "DISC-" + rnd;
+            state.discountCodes.unshift({ code: code, type: tp, value: val, scope: sc, createdAt: todayStr() });
+            saveState(); renderOwnerDashboard();
+          });
+
+          box.querySelectorAll("[data-copy-disc]").forEach(function (b) {
+            b.addEventListener("click", function () { copyText(b.getAttribute("data-copy-disc"), b); });
+          });
+          box.querySelectorAll("[data-del-disc]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              state.discountCodes.splice(Number(b.getAttribute("data-del-disc")), 1);
+              saveState(); renderOwnerDashboard();
+            });
           });
         }
         else if (activeOwnerTab === "telegram") {
